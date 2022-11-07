@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+      let world = 'hello world'
+      let address = 'china'
+      let obj = {
+        name : 'zs',
+        [world] : 'ls',   // hello world ： ls
+        address           // assress : china
+      }
+      console.log(obj);  // 表达式键名
+
+
+      let obj2 = {
+        id : 1,
+        name : 'zs'
+      }
+      // 直接替换 obj2 的内容，对象名不变，内容改变
+      ['obj2.address'] = 'china'
+      console.log(obj2);  // 打印 obj2 输出 china
+
+    </script>
+</body>
+</html>
