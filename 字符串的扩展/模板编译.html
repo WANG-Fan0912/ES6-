@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>打开控制台查看内容</div>
+
+    <div id="context"></div>
+
+    <script>
+        let context = document.getElementById('context')
+        // const data = {
+        //     user: {
+        //         name: 'hayes',
+        //         age: 18
+        //     }
+        // }
+        // const compile = function (data) {
+        //     return `<p>Hello, I'm ${data.user.name}! ${data.user.age} years old!</p>`
+        // }
+        // console.log(compile);
+
+
+        console.log('------构建模板生成函数------');
+        /* 1:构建模板生成函数
+           传入模板字符串,通过 new Function 方式返回一个新函数,新函数接收一个obj对象
+        */
+        // const compile = function (template) {
+        //     // 模板字符串
+        //     let result = ''
+
+        //     return new Function('obj', result)
+        // }
+
+
+
+        /* 2:正则替换
+           把 {{xxx}} 找出来,替换为 obj.xxx
+        */
+        // const compile2 = function (template) {
+        //     // 模板字符串
+        //     let result = template.replace(/{{(.+?)}}/g, (match, key) => {
+        //         return `obj.${key}`
+        //     });
+        //     result = `return "${result}"`;
+        //     return new Function('obj', result);
+        // }
+        // const template2 = "<p>Hello, I'm {{user.name}}! {{user.age}} years old!</p>"
+        // const render2 = compile2(template2)
+
+        // console.log(render2)
+        // 此时,函数打印如下
+        /* 
+         anonymous(obj
+            ) {
+            return "<p>Hello, I'm obj.user.name! obj.user.age years old!</p>"
+            }
+        */
+        /* 我们需要把字符串中的 obj.user.name 和 obj.user.age 变成动态的 */
+
+        /* 3:修改一下正则
+         */
+        // const compile2 = function (template) {
+        //     // 模板字符串
+        //     let result = template.replace(/{{(.+?)}}/g, (match, key) => {
+        //         // 前后加上引号
+        //         return `" + obj.${key} + "`
+        //         // 此处就变成了  "<p>Hello, I'm " + obj.user.name + "! " + obj.user.age + " years old!</p>"
+        //     });
+        //     result = `return "${result}"`;
+        //     return new Function('obj', result);
+        // }
+        // const template2 = "<p>Hello, I'm {{user.name}}! {{user.age}} years old!</p>"
+        // const render2 = compile2(template2)
+        // console.log(render2)
+        /* 打印结果
+        ƒ anonymous(obj
+            ) {
+            return "<p>Hello, I'm " + obj.user.name + "! " + obj.user.age + " years old!</p>"
+            }
+        */
+
+        /* 最终代码 */
+        const compile = function (template) {
+            // 模板字符串
+            let result = template.replace(/{{(.+?)}}/g, (match, key) => {
+                // 前后加上引号
+                return `" + obj.${key} + "`
+                // 此处就变成了  "<p>Hello, I'm " + obj.user.name + "! " + obj.user.age + " years old!</p>"
+            });
+            result = `return "${result}"`;
+            return new Function('obj', result);
+        }
+        const template = "<p>Hello, I'm {{user.name}}! {{user.age}} years old!</p>"
+        const render = compile(template)
+
+        const data = {
+            user: {
+                name: 'hayes',
+                age: 18
+            }
+        }
+        const result = render(data)
+        console.log(result)
+    </script>
+</body>
+
+</html>

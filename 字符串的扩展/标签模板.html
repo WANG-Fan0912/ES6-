@@ -15,7 +15,7 @@
         console.log('--------标签模板--------');
         alert `hello` // 等同于 alert(['hello'])
 
-        /* 标签模板其实是函数调用的一种特殊形式，此处的标签值得是函数，紧跟在后面的模板字符串就是它的参数 */
+        /* 标签模板其实是函数调用的一种特殊形式，此处的alert是函数，紧跟在后面的模板字符串就是它的参数 */
 
         /* 但如果模板字符串有变量，就不是简单的调用，而是会先将模板字符串先处理成多个参数，再调用函数 */
         let a = 5
@@ -84,46 +84,45 @@
 
         /* 模板标签的一个重要应用就是防止用户恶意输入，过滤HTML字符串 */
 
-        let sender = '<script>alert("恶意代码")</script>'
-        function SaferHTML(templateData){
-            let s = templateData[0]
-            for(let i = 1 ; i < arguments.length:i++){
-                let arg = String(arguments[i])
+        // 此处编译器会自动格式化,所以用 sxxxcript 代替 script
+        let sender = '<sxxxcript>alert("恶意代码")</sxxxcript>'
 
-                // 过滤
-                s += arg.replace(/&/g,"&amp")  // 转义 & 为&amp字符
-                        .replace(/</g,"&lt")   // 转义 < 为&lt字符
-                        .replace(/>/g,"&gt")   // 转义 > 为&gt字符
+        function SaferHTML(templateData) {
+            let s = templateData[0]
+            for (let i = 1; i < arguments.length; i++) {
+                let arg = String(arguments[i])
+                s += arg.replace(/&/g, "&amp")
+                    .replace(/</g, "&lt")
+                    .replace(/>/g, "&gt")
+                // 过滤 转义 &为&amp字符;  <为&lt字符;  >为&gt字符;
                 s += templateData[i]
-              
+
             }
             return s
         }
         let message = SaferHTML `<p>${sender}个人信息</p>`
-        console.log(message);  
-        // 打印  <p>&lt;script&gt;alert("恶意代码")&lt;/script&gt; 个人信息</p>
+        console.log(message);
+        // 打印 <p>&lt;script&gt;alert("恶意代码")&lt;/script&gt; 个人信息</p>
 
         /* 标签模板可以做多语言转换（国际化） */
-        i18n`Welcome to ${userName}, you are visitor number ${visitorNumber}!`
+        i18n `Welcome to ${userName}, you are visitor number ${visitorNumber}!`
 
         /* 甚至可以在标签模板嵌套其他语言 */
-        // jsx`
-        // <div>
-        //     <input
-        //     ref='input'
-        //     onChange='${this.handleChange}'
-        //     defaultValue='${this.state.value}' />
-        //     ${this.state.value}
-        // </div>
-        // `
+        // jsx `
+        //     <div>
+        //         <input
+        //         ref='input'
+        //         onChange='${this.handleChange}'
+        //         defaultValue='${this.state.value}' />
+        //         ${this.state.value}
+        //     </div>
+        //     `
         // 此处就是通过jsx函数，将DOM字符串转换为React对象
 
 
-        /* 模板处理函数的第一个参数，也就是非参数的模板字符串数组，有一个row属性 */
-        console.log(`abc`) // ['abc',row:Array[1]]
-        // 这个row保存的是转义后的原字符串
-
-        
+        /* 模板处理函数的第一个参数，也就是非参数的模板字符串数组，有一个raw属性 */
+        console.log(`abc`) // ['abc',raw:Array[1]]
+        // 这个raw保存的是转义后的原字符串
     </script>
 </body>
 

@@ -70,11 +70,12 @@
            模板字符串识别标签，并却可以识别多行内容，传统的写法需要用 + 号连接
            模板字符串识别空格
         */
+        let context = document.getElementById('context')
         let str = `<div>东方 不败</div>
                    <div>东方求败</div>`
-        let context = document.getElementById('context')
-        console.log(context.innerHTML = str); // 页面显示 东方 不败  
+        console.log(context.innerHTML = str); // 页面显示 东方 不败
 
+        console.log("<div>东方不败有" + 100 + "元</div>")
         /* 通过${}来对字符串内容进行插值，并且可以在此使用任意表达式，并且还能调用函数 */
         let str2 = `<div>东方不败${100}</div>` // 东方不败 100
         let s = 100
