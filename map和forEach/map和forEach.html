@@ -1,64 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
 </head>
+
 <body>
-    <script>
+  <div>看控制台输出</div>
+  <script>
+    let arr = [{
+        id: 1,
+        name: 'zs'
+      },
+      {
+        id: 2,
+        name: 'ls'
+      },
+      {
+        id: 3,
+        name: 'ww'
+      },
+    ]
 
-      let arr = [
-        {id : 1 ,name : 'zs'},
-        {id : 2 ,name : 'ls'},
-        {id : 3 ,name : 'ww'},
-      ]
-
-      /*
-        forEach不会返回新数组
-      */
-      arr.forEach((el,index)=>{ 
-        console.log('foreach遍历');
-        // console.log(el,index);
-        // console.log(arr[index]);
-          el.id == 2 ? el.name = 'foreach' : ''
-      })
-      console.log(arr);
-
-
-
-      /*
-        map会返回新数组
-      */
-      arr.map((el,index)=>{
-        console.log('map遍历');
-        // console.log(arr[index]);
-        // console.log(el,index);
-        el.id == 3 ? el.name = 'map' : ''
-      })
-      console.log(arr);
-
-      /*
-        共同点：
-        都是循环遍历数组中的每一项
-        forEach和map方法里每次执行匿名函数都支持3个参数，参数分别是item（当前每一项），index（索引值），arr（原数组）
-        匿名函数中的this都是指向window
-        只能遍历数组
-        网上说不会影响原数组（但其实是可以直接更改原数组的）
-
-        不同点：
-        map方法返回一个新的数组，数组中的元素为原始数组调用函数处理后的值
-        forEach方法不会返回新数组
-
-        性能：
-        for > forEach > map
-        for 循环当然是最简单的，因为它没有任何额外的函数调用栈和上下文
-        forEach 其次，因为它其实比我们想象得要复杂一些。它不是普通的 for 循环的语法糖，还有诸多参数和上下文需要在执行的时候考虑进来，这里可能拖慢性能；
-        map 最慢，因为它的返回值是一个等长的全新的数组，数组创建和赋值产生的性能开销很大。
-      */
+    /*
+      forEach不会返回新数组
+    */
+    arr.forEach((el, index) => {
+      console.log('foreach遍历');
+      // console.log(el,index);
+      // console.log(arr[index]);
+      el.id == 2 ? el.name = 'foreach' : ''
+    })
+    console.log(arr);
 
 
-    </script>
+
+    /*
+      map会返回新数组
+    */
+    arr.map((el, index) => {
+      console.log('map遍历');
+      // console.log(arr[index]);
+      // console.log(el,index);
+      el.id == 3 ? el.name = 'map' : ''
+    })
+    console.log(arr);
+
+    /*
+      共同点：
+      都是循环遍历数组中的每一项
+      forEach和map方法里每次执行匿名函数都支持3个参数，参数分别是item（当前每一项），index（索引值），arr（原数组）
+      匿名函数中的this都是指向window
+      只能遍历数组
+      网上说不会影响原数组（但其实是可以直接更改原数组的）
+
+      不同点：
+      map方法返回一个新的数组，数组中的元素为原始数组调用函数处理后的值
+      forEach方法不会返回新数组
+
+      性能：
+      for > forEach > map
+      for 循环当然是最简单的，因为它没有任何额外的函数调用栈和上下文
+      forEach 其次，因为它其实比我们想象得要复杂一些。它不是普通的 for 循环的语法糖，还有诸多参数和上下文需要在执行的时候考虑进来，这里可能拖慢性能；
+      map 最慢，因为它的返回值是一个等长的全新的数组，数组创建和赋值产生的性能开销很大。
+    */
+  </script>
 </body>
+
 </html>

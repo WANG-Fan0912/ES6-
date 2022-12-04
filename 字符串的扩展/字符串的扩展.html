@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看内容</div>
+
+    <script>
+        console.log('\u0061');  // 打印 a
+        // \u后面的为字符的 Unicode 码点   \u 后面4位 xxxx
+
+        // 只识别 \u0000 到 \UFFFF 之间的字符，超出需要使用两个双字节表示
+        console.log('\uD842\uDFB7');  // 打印 吉
+    
+        // 如果超出了这个字节，那么将会识别成\u20BB+7,两个字节拼接
+        console.log('\u20BB7');  // 输出 ' 7'
+        console.log('\u00617');  // 输出 'a7'
+
+
+        /////// ES6
+        // 如果超过了两个字节，只需要将其放入大括号即可正确解读
+        console.log("\u{20BB7}");  // 打印 吉
+
+        // 只要将码点放入大括号即可正确解读
+        console.log('\u{41}\u{42}\u{43}');  // 输出ABC
+
+        console.log('\u{1F680}' == '\uD83D\uDE80');   // 大括号与4字节的写法等价 输出true
+
+        // js的6中表示字符的方法
+        console.log('\z' === 'z');
+        console.log('\172' === 'z');
+        console.log('\x7A' === 'z');
+        console.log('\u007A' === 'z');
+        console.log('\u{7A}' === 'z');
+        console.log('z' === 'z');
+
+        // 字符串遍历器接口 字符串可以被for--of遍历
+        for(let codePoint of 'foo'){ 
+            console.log(codePoint);  // f o o
+        }
+
+        let text = String.fromCodePoint(0x20BB7)
+        for(let i = 0 ; i < text.length ; i ++) {
+            console.log(text[i]);  // ' '
+        }
+        // for---of可以识别 大于0xFFFF的码点 ， 而传统的for无法识别
+        for(let i of text){
+            console.log(i);  // 吉
+        }
+    </script>
+</body>
+</html>

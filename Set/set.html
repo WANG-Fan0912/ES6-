@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
 
-    <script>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div>看控制台输出</div>
+  <script>
     // *******************第一部分*******************
 
-    let arr = [ 1,2,3,4,5,3,2 ]
+    let arr = [1, 2, 3, 4, 5, 3, 2]
     // 数组去重
     // 方法一
     let newArr = [new Set(arr)]
@@ -21,27 +23,30 @@
     console.log(newArr2);
 
 
-
-
-
-
-
-
-
-
     console.log('-----------------第二部分--------------------');
 
     // *******************第二部分*******************
-     let obj = [
-        {id : 1 ,name : 'zs'},
-        {id : 2 ,name : 'ls'},
-        {id : 3 ,name : 'ww'},
-        {id : 2 ,name : 'ls'}
-     ]
+    let obj = [{
+        id: 1,
+        name: 'zs'
+      },
+      {
+        id: 2,
+        name: 'ls'
+      },
+      {
+        id: 3,
+        name: 'ww'
+      },
+      {
+        id: 2,
+        name: 'ls'
+      }
+    ]
 
     //  数组对象去重     
-     let newObj = [...new Set(obj.map(el=> JSON.stringify(el)))].map(res=> JSON.parse(res))
-     console.log(newObj);
+    let newObj = [...new Set(obj.map(el => JSON.stringify(el)))].map(res => JSON.parse(res))
+    console.log(newObj);
     //  步骤拆解：
     /*
     1、判断两个基本数据类型是否相同，比较的是数据的值。判断两个引用类型是否一样，比较的是引用
@@ -49,83 +54,84 @@
     3、基本类型数据存储在栈，值相同就直接去重。引用数据类型存储在堆，引用类型数据 值 相同 位置不相同也无法去重。参考第一条的解释。
     4、只要将引用类型数据转变成基本数据类型，基本数据类型直接比较就可以去重了。去重完成后通过字符串转json对象即可。
     */
-   /*
-          [...new Set(obj.map(el=> JSON.stringify(el)))]   这一步 map 将内部的每一条转换成字符串，返回一个新数组，也就是引用类型数据转基本类型数据,下面是转换结果
-           [ 
-            0: "{\"id\":1,\"name\":\"zs\"}"   // 字符串
-            1: "{\"id\":2,\"name\":\"ls\"}"   // 字符串
-           ]
-          .map(res=> JSON.parse(res))  这一步将去重处理好的值转换为对象 得到最终结果
-   */
+    /*
+           [...new Set(obj.map(el=> JSON.stringify(el)))]   这一步 map 将内部的每一条转换成字符串，返回一个新数组，也就是引用类型数据转基本类型数据,下面是转换结果
+            [ 
+             0: "{\"id\":1,\"name\":\"zs\"}"   // 字符串
+             1: "{\"id\":2,\"name\":\"ls\"}"   // 字符串
+            ]
+           .map(res=> JSON.parse(res))  这一步将去重处理好的值转换为对象 得到最终结果
+    */
 
 
 
-
-
-
-
-
-
-
-   console.log('-----------------第三部分--------------------');
+    console.log('-----------------第三部分--------------------');
 
     // *******************第三部分*******************
-    let arr3 = [
-        {id : 1 ,name : 'zs'},
-        {id : 2 ,name : 'ls'},
-        {id : 3 ,name : 'ww'}
-      ]
+    let arr3 = [{
+        id: 1,
+        name: 'zs'
+      },
+      {
+        id: 2,
+        name: 'ls'
+      },
+      {
+        id: 3,
+        name: 'ww'
+      }
+    ]
 
-      let newArr3 = new Set(arr3)
+    let newArr3 = new Set(arr3)
     //   尾部添加
-      newArr3.add({id : 4,name : 'swk'})
-      console.log('尾部添加');
-      console.log(newArr3);
+    newArr3.add({
+      id: 4,
+      name: 'swk'
+    })
+    console.log('尾部添加');
+    console.log(newArr3);
 
 
     //   删除数组中的某一项  数组对象的话直接用filter
-      let arr4 = [1,2,3,4,5,4,4,4]
-      let newArr4 = new Set(arr4)
-      newArr4.delete(2)    // 删除成功返回:true    删除失败返回:false
-      console.log('删除数组中某一项');
-      console.log(newArr4);
-
-
-       
-      let arr5 = [1,2,3,4,5,6,7]
-      let newArr5 = new Set(arr5)
-      console.log('检测数组中是存在set值');   
-      console.log(newArr5.has(5));// 存在返回true,不存在返回false
+    let arr4 = [1, 2, 3, 4, 5, 4, 4, 4]
+    let newArr4 = new Set(arr4)
+    newArr4.delete(2) // 删除成功返回:true    删除失败返回:false
+    console.log('删除数组中某一项');
+    console.log(newArr4);
 
 
 
-
-      let arr6 = [1,2,3,4,5]
-      let nweArr6 = new Set(arr6)
-      nweArr6.clear()   // 清除数组中所有值，没有返回值
-      console.log('清除数组中所有值');
-      console.log(nweArr6);
+    let arr5 = [1, 2, 3, 4, 5, 6, 7]
+    let newArr5 = new Set(arr5)
+    console.log('检测数组中是存在set值');
+    console.log(newArr5.has(5)); // 存在返回true,不存在返回false
 
 
-      let arr7 = [1,2,3,4,5]
-      let newArr7 = new Set(arr7)
-      console.log('获取数组的长度 & size 从1开始');  
-      console.log(newArr7.size);  
-      
-
-      /*
-      这几个与es6的遍历方法一致
-      Set.prototype.keys() —— 返回键名的遍历器
-      Set.prototype.values() —— 返回键值的遍历器
-      Set.prototype.entries() —— 返回键值对的遍历器
-      Set.prototype.forEach() —— 使用回调函数遍历元素
-      由于 Set 结构没有键名，只有键值（或者说键名和键值是同一个值），所以 keys 方法和 values 方法的行为完全一致
-      */
-
-    
 
 
-    </script>
-    
+    let arr6 = [1, 2, 3, 4, 5]
+    let nweArr6 = new Set(arr6)
+    nweArr6.clear() // 清除数组中所有值，没有返回值
+    console.log('清除数组中所有值');
+    console.log(nweArr6);
+
+
+    let arr7 = [1, 2, 3, 4, 5]
+    let newArr7 = new Set(arr7)
+    console.log('获取数组的长度 & size 从1开始');
+    console.log(newArr7.size);
+
+
+    /*
+    这几个与es6的遍历方法一致
+    Set.prototype.keys() —— 返回键名的遍历器
+    Set.prototype.values() —— 返回键值的遍历器
+    Set.prototype.entries() —— 返回键值对的遍历器
+    Set.prototype.forEach() —— 使用回调函数遍历元素
+    由于 Set 结构没有键名，只有键值（或者说键名和键值是同一个值），所以 keys 方法和 values 方法的行为完全一致
+    */
+  </script>
+
 </body>
+
 </html>

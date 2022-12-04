@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <div>数组：[5,2,1,4,9,8]</div>
+        <div>数组2:[1, 3, 5, 2, 6, 4]</div>
+        <button onclick="sort(0)">常规排序</button>
+        <button onclick="sort(7)">解构排序</button>
+        <button onclick="sort(1)">sotr降序</button>
+        <button onclick="sort(2)">sotr升序</button>
+    </div>
+    <div>
+        <div>
+            结果：<span id="comeout"></span>
+        </div>
+        <div>
+            结果2：<span id="comeout2"></span>
+        </div>
+    </div>
+
+    <hr>
+
+    <div>数组对象中的<span style="color:red">某个</span>属性排序
+        <button onclick="sort(3)">升序</button>
+        <button onclick="sort(4)">降序</button>
+    </div>
+    <div>数组：[{id:1},{id:3},{id:2},{id:8},{id:6},{id:4}]</div>
+    <div>结果：<span id="comeoutChoice"></span></div>
+
+    <hr>
+
+    <div>
+        数组对象中的<span style="color:red">多个</span>属性排序
+        <button onclick="sort(5)">升序</button>
+        <button onclick="sort(6)">降序</button>
+        <span style="color:red">默认根据年龄排序，年龄相同则按照id排序</span>
+    </div>
+    <div>数组：[{id:1,age:10},{id:3,age:5},{id:2,age:6},{id:8,age:8},{id:6,age:5},{id:4,age:5}]</div>
+    <div>结果：<span id="comeoutMulti"></span></div>
+
+    <script>
+        let arr = [5, 2, 1, 4, 9, 8]
+        let arr_choice = [{
+            id: 1
+        }, {
+            id: 3
+        }, {
+            id: 2
+        }, {
+            id: 8
+        }, {
+            id: 6
+        }, {
+            id: 4
+        }]
+        let arr_multi = [{
+            id: 1,
+            age: 10
+        }, {
+            id: 3,
+            age: 5
+        }, {
+            id: 2,
+            age: 6
+        }, {
+            id: 8,
+            age: 8
+        }, {
+            id: 6,
+            age: 5
+        }, {
+            id: 4,
+            age: 5
+        }]
+
+        let comeout = document.getElementById('comeout')
+        let comeout2 = document.getElementById('comeout2')
+        let comeout_choice = document.getElementById('comeoutChoice')
+        let comeoutMulti = document.getElementById('comeoutMulti')
+
+        function sort(status) {
+            switch (status) {
+                case 0:
+                    forSort()
+                    break;
+                case 1:
+                    downSort()
+                    break;
+                case 2:
+                    upSort()
+                    break;
+                case 3:
+                    choiceUpSort()
+                    break;
+                case 4:
+                    choiceDownSort()
+                    break;
+                case 5:
+                    upMulit()
+                    break;
+                case 6:
+                    downMulit()
+                    break;
+                case 7:
+                    JSort()
+                    break;
+
+
+                default:
+                    break;
+            }
+
+
+        }
+
+
+        // 常规冒泡排序
+        function forSort() {
+
+            for (let i = 0; i < arr.length; i++) {
+                for (let j = 0; j < arr.length - 1; j++) {
+                    if (arr[j] > arr[j + 1]) {
+                        let num = arr[j]
+                        arr[j] = arr[j + 1]
+                        arr[j + 1] = num
+                        comeout.innerText = arr
+                    }
+                }
+            }
+        }
+
+        function JSort() {
+            // es6解构排序
+            let es = [1, 3, 5, 2, 6, 4]
+            for (let i = 0; i < es.length; i++) {
+                for (let j = 0; j < es.length - 1; j++) {
+                    if (es[j] > es[j + 1]) {
+                        [es[j], es[j + 1]] = [es[j + 1], es[j]]
+                        comeout2.innerText = es
+                    }
+                }
+            }
+        }
+
+        // sort升序
+        function upSort() {
+            arr.sort(function (a, b) {
+                return a - b
+            })
+            comeout.innerText = arr
+        }
+
+        // sort降序
+        function downSort() {
+            arr.sort(function (a, b) {
+                return b - a
+            })
+            comeout.innerText = arr
+        }
+
+        // 根据数组中的某个属性排序 升序
+        function choiceUpSort() {
+            arr_choice.sort(function (a, b) {
+                return a.id - b.id
+            })
+            comeout_choice.innerText = JSON.stringify(arr_choice)
+        }
+
+        // 根据数组中的某个属性排序 降序
+        function choiceDownSort() {
+            arr_choice.sort(function (a, b) {
+                return b.id - a.id
+            })
+            comeout_choice.innerText = JSON.stringify(arr_choice)
+        }
+
+
+
+
+
+
+        // 多个属性排序 升序
+        function upMulit() {
+            arr_multi.sort(function (a, b) {
+                // 默认根据年龄排序，年龄相同则按照id排序
+                if (a.age == b.age) {
+                    return a.id - b.id
+                }
+                return a.age - b.age
+            })
+            comeoutMulti.innerText = JSON.stringify(arr_multi)
+        }
+
+        // 多个属性排序 降序
+        function downMulit() {
+            arr_multi.sort(function (a, b) {
+                // 默认根据年龄排序，相同则按照id排序
+                if (a.age == b.age) {
+                    return b.id - a.id
+                }
+                return b.age - a.age
+            })
+            comeoutMulti.innerText = JSON.stringify(arr_multi)
+        }
+    </script>
+</body>
+
+</html>
