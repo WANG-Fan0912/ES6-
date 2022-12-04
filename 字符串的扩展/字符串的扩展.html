@@ -1,34 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-    <div>打开控制台查看内容</div>
+    <div id="context">打开控制台查看内容</div>
+    <div id="context2"></div>
+    <div id="context3">模板字符串嵌套</div>
 
     <script>
-        console.log('\u0061');  // 打印 a
+        console.log('\u0061'); // 打印 a
         // \u后面的为字符的 Unicode 码点   \u 后面4位 xxxx
 
         // 只识别 \u0000 到 \UFFFF 之间的字符，超出需要使用两个双字节表示
-        console.log('\uD842\uDFB7');  // 打印 吉
-    
+        console.log('\uD842\uDFB7'); // 打印 吉
+
         // 如果超出了这个字节，那么将会识别成\u20BB+7,两个字节拼接
-        console.log('\u20BB7');  // 输出 ' 7'
-        console.log('\u00617');  // 输出 'a7'
+        console.log('\u20BB7'); // 输出 ' 7'
+        console.log('\u00617'); // 输出 'a7'
 
 
         /////// ES6
         // 如果超过了两个字节，只需要将其放入大括号即可正确解读
-        console.log("\u{20BB7}");  // 打印 吉
+        console.log("\u{20BB7}"); // 打印 吉
 
         // 只要将码点放入大括号即可正确解读
-        console.log('\u{41}\u{42}\u{43}');  // 输出ABC
+        console.log('\u{41}\u{42}\u{43}'); // 输出ABC
 
-        console.log('\u{1F680}' == '\uD83D\uDE80');   // 大括号与4字节的写法等价 输出true
+        console.log('\u{1F680}' == '\uD83D\uDE80'); // 大括号与4字节的写法等价 输出true
 
         // js的6中表示字符的方法
         console.log('\z' === 'z');
@@ -39,18 +43,69 @@
         console.log('z' === 'z');
 
         // 字符串遍历器接口 字符串可以被for--of遍历
-        for(let codePoint of 'foo'){ 
-            console.log(codePoint);  // f o o
+        for (let codePoint of 'foo') {
+            console.log(codePoint); // f o o
         }
 
         let text = String.fromCodePoint(0x20BB7)
-        for(let i = 0 ; i < text.length ; i ++) {
-            console.log(text[i]);  // ' '
+        for (let i = 0; i < text.length; i++) {
+            console.log(text[i]); // ' '
         }
         // for---of可以识别 大于0xFFFF的码点 ， 而传统的for无法识别
-        for(let i of text){
-            console.log(i);  // 吉
+        for (let i of text) {
+            console.log(i); // 吉
         }
+
+
+        /* 
+        UTF-8 标准规定，0xD800到0xDFFF之间的码点，不能单独使用，必须配对使用。比如，\uD834\uDF06是两个码点，但是必须放在一起配对使用，代表字符𝌆。这是为了表示码点大于0xFFFF的字符的一种变通方法。单独使用\uD834和\uDF06这两个码点是不合法的，或者颠倒顺序也不行，因为\uDF06\uD834并没有对应的字符。
+        JSON.stringify()的问题在于，它可能返回0xD800到0xDFFF之间的单个码点。 
+        所以 es2019对JSON.stringify()做出了改变，如果遇到0xD800到0xDFFF之间的单个码点，或者不存在的配对形式，它会返回转义字符串，留给应用自己决定下一步的处理。
+        */
+        console.log(JSON.stringify('\u{D834}')) // ""\\uD834""
+        console.log(JSON.stringify('\uDF06\uD834')) // ""\\uD834""
+
+
+        /* 模板字符串
+           模板字符串识别标签，并却可以识别多行内容，传统的写法需要用 + 号连接
+           模板字符串识别空格
+        */
+        let str = `<div>东方 不败</div>
+                   <div>东方求败</div>`
+        let context = document.getElementById('context')
+        console.log(context.innerHTML = str); // 页面显示 东方 不败  
+
+        /* 通过${}来对字符串内容进行插值，并且可以在此使用任意表达式，并且还能调用函数 */
+        let str2 = `<div>东方不败${100}</div>` // 东方不败 100
+        let s = 100
+        let str3 = `<div>东方不败${s == 100 ? '有100元' : '没有100元'}</div>` // 东方不败有100元
+        let str4 = `<div>调用函数：${text2()}</div>`
+        let context2 = document.getElementById('context2')
+        console.log(context2.innerHTML = str4); // 页面显示 调用函数：东方不败  
+
+        function text2() {
+            return '东方不败'
+        }
+
+        /* 模板字符串嵌套 */
+        let context3 = document.getElementById('context3')
+        let arr = [{
+            name: '字符串',
+            index: '01'
+        }, {
+            name: '字符串',
+            index: '02'
+        }]
+        let s2 = `
+           <div>模板字符串嵌套：${
+            arr.map(el => `
+                <div>${el.name}</div>
+                <div>${el.index}</div>
+            `)
+           }</div>
+        `
+        context3.innerHTML = s2
     </script>
 </body>
+
 </html>
