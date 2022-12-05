@@ -11,6 +11,7 @@
 <body>
     <div>打开控制台查看内容</div>
 
+    <div id="market"></div>
     <div id="context"></div>
 
     <script>
@@ -25,7 +26,11 @@
         //     return `<p>Hello, I'm ${data.user.name}! ${data.user.age} years old!</p>`
         // }
         // console.log(compile);
-
+        let market = document.getElementById('market')
+        let num = 5
+        let money = 4
+        market.innerHTML = "总共卖出" + num + "杯柠檬水，总金额：" + num * money + "元"
+        market.innerHTML = `总共卖出${num}杯柠檬水，总金额：${num * money}元`
 
         console.log('------构建模板生成函数------');
         /* 1:构建模板生成函数
@@ -92,7 +97,7 @@
             let result = template.replace(/{{(.+?)}}/g, (match, key) => {
                 // 前后加上引号
                 return `" + obj.${key} + "`
-                // 此处就变成了  "<p>Hello, I'm " + obj.user.name + "! " + obj.user.age + " years old!</p>"
+                // 此处就变成了 "<p>Hello, I'm " + obj.user.name + "! " + obj.user.age + " years old!</p>"
             });
             result = `return "${result}"`;
             return new Function('obj', result);
@@ -107,6 +112,7 @@
             }
         }
         const result = render(data)
+        context.innerHTML = result
         console.log(result)
     </script>
 </body>
