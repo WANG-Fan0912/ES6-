@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看内容</div>
+
+    <script>
+        console.log('========消除空格==============');
+        /* 消除空格 */
+        let s = ' abc  '
+        console.log(s.trim());  // 消除首尾空格   'abc'
+        console.log(s.trimStart());  // 消除头部空格  'abc  '
+        console.log(s.trimEnd());  // 消除尾部空格 '  abc'
+
+
+        console.log('=====replaceAll()=========');
+        /* replaceAll() */
+        /* 一般使用的replace() 只能替换第一个匹配的字符 */
+        console.log('hello'.replace('l','o'));  // heolo  只替换了第一个
+
+        /* 如果要匹配所有，就需要使用正则表达式的 g 修饰符 */
+        console.log('hello'.replace(/l/g,'o'));  // heooo  替换所有
+
+        /* 这里提供了一个更加方便的方法，es2021引入了replaceAll(),可以匹配所有并替换 */
+        let r = 'green'
+        console.log(r.replaceAll('e','n'));  // grnnn  匹配所有e替换为n
+        console.log(r);  // green
+        /* ***replace和replaceAll()会返回新的字符，不会影响原字符*** */
+
+        /* replaceAll()为替换所有 */
+        
+    </script>
+</body>
+</html>
