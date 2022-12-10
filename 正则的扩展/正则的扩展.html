@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看输出结果</div>
+    
+    <script>
+        console.log('====RegExp()=======');
+        /* RegExp构造函数 */
+        /* 
+        new RegExp('abc','i') 
+        等价于  
+        /abc/i 
+        */
+        let regex = new RegExp('abc','i')
+        let regex2 = /abc/i
+        let s = 'abc'
+        console.log(regex.test(s) == regex2.test(s));
+        /* 在es5中，如果第一个参数是一个正则，第二个是修饰会报错 */
+        // let regex3 = new RegExp(/abc/,'i')  // 这种写法在es5报错
+
+        /* es6改变了这种行为，如果第一个是正则，第二个参数可以使用修饰符，并且返回
+           的正则表达式会忽略原有的正则表达式修饰符，只使用新指定的修饰符
+        */
+       let regex4 = new RegExp(/abc/ig,'i')  // 这里的ig修饰符会被第二个参数 i 覆盖，最后的结果为/abc/i
+
+       console.log('======u 修饰符========');
+       /* es6对正则表达式添加了u修饰符，表示为==Unicode模式==，用来处理大于\uFFFF的Unicode字符 */
+       console.log(/^\uD83D/u.test('\uD83D\uDC2A'));  // false 这里加上u.变成了es6支持，可以将\uD83D\uDC2A转译为一个字符，比对不匹配返回false
+       console.log(/^\uD83D/.test('\uD83D\uDC2A'));  // true  这里没有加u.为es5支持，无法识别4个字节的UTF-16编码。会将\uD83D\uDC2A识别为两个字符，比对的时候其中的字符匹配，所以返回true
+
+
+       
+    </script>
+</body>
+</html>
