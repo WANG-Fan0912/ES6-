@@ -82,6 +82,55 @@
         let rul = /abc/ig
         console.log(rul.source); // abc
         console.log(rul.flags); // ig
+
+
+        console.log(' ==== s 修饰符 ： dotAll模式');
+        /* 
+          正则表达式zhong ，点(.)是一个特殊字符，代表任意字符，但是有两种例外
+          第一种：四个字节的UTF-16字符，这个使用 u 修饰符解决
+          第二种：行终止符，使用 s 修饰符解决
+        */
+        /* 行终止符，就是该字符表示一行的终结。以下四个字符属于“行终止符”。
+        U+000A 换行符（\n）
+        U+000D 回车符（\r）
+        U+2028 行分隔符（line separator）
+        U+2029 段分隔符（paragraph separator） */
+        let f = /foo.bar/.test('foo\nbar')
+        console.log(f); // false // 因为.不匹配 \n ,所以正则表达式返回false
+        // 解决方法 : s 修饰符
+        /* 使用s修饰符，可以使 . 匹配任意单个字符 */
+        let f2 = /foo.bar/s.test('foo\nbar')
+        console.log(f2); // true
+        /* 
+        这种s修饰符的模式被称为dotAll模式，dot就是代表一切字符
+        所以，正则表达式还引入了dotAll属性，检查该表达式是否开启了dotAll模式
+         */
+        let f3 = /foo.bar/s
+        console.log(f3.dotAll); // true
+
+        console.log('====先行断言==后行断言===');
+        console.log('==先行断言==');
+        /* 先行断言指的是，x在y前面才匹配
+           /x(?=y)/   x在y符号前才匹配   xxx = y
+        */
+        let look = '100% 东方不败'
+        console.log(/\d+(?=%)/.exec(look)); // 100
+		let look2 = '100! 东方不败'
+		console.log(/\d+(?=%)/.exec(look2));  // null 没有匹配到%前的数字
+		
+		/* 
+		 后行断言
+		 与先行断言相反，x在y后面时才匹配
+		 /(?<=y)x/
+		  ? 后面 跟 <= 条件y   
+		 */
+		let look3 = '东方不败 $100 西方求败'
+		console.log(/(?<=\$)\d+/.exec(look3)); // 100  表示在\$后的字符才会被匹配
+		/* 注意
+		   先行断言和后行断言的条件是不计入返回结果的
+		 */
+		
+		
     </script>
 </body>
 
