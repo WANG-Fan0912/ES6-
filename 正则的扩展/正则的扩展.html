@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     <div>打开控制台查看输出结果</div>
-    
+
     <script>
         console.log('====RegExp()=======');
         /* RegExp构造函数 */
@@ -17,7 +19,7 @@
         等价于  
         /abc/i 
         */
-        let regex = new RegExp('abc','i')
+        let regex = new RegExp('abc', 'i')
         let regex2 = /abc/i
         let s = 'abc'
         console.log(regex.test(s) == regex2.test(s));
@@ -27,15 +29,60 @@
         /* es6改变了这种行为，如果第一个是正则，第二个参数可以使用修饰符，并且返回
            的正则表达式会忽略原有的正则表达式修饰符，只使用新指定的修饰符
         */
-       let regex4 = new RegExp(/abc/ig,'i')  // 这里的ig修饰符会被第二个参数 i 覆盖，最后的结果为/abc/i
+        let regex4 = new RegExp(/abc/ig, 'i') // 这里的ig修饰符会被第二个参数 i 覆盖，最后的结果为/abc/i
 
-       console.log('======u 修饰符========');
-       /* es6对正则表达式添加了u修饰符，表示为==Unicode模式==，用来处理大于\uFFFF的Unicode字符 */
-       console.log(/^\uD83D/u.test('\uD83D\uDC2A'));  // false 这里加上u.变成了es6支持，可以将\uD83D\uDC2A转译为一个字符，比对不匹配返回false
-       console.log(/^\uD83D/.test('\uD83D\uDC2A'));  // true  这里没有加u.为es5支持，无法识别4个字节的UTF-16编码。会将\uD83D\uDC2A识别为两个字符，比对的时候其中的字符匹配，所以返回true
+        console.log('======u 修饰符========');
+        /* es6对正则表达式添加了u修饰符，表示为==Unicode模式==，用来处理大于\uFFFF的Unicode字符 */
+        console.log(/^\uD83D/u.test('\uD83D\uDC2A')); // false 这里加上u.变成了es6支持，可以将\uD83D\uDC2A转译为一个字符，比对不匹配返回false
+        console.log(/^\uD83D/.test(
+            '\uD83D\uDC2A')); // true  这里没有加u.为es5支持，无法识别4个字节的UTF-16编码。会将\uD83D\uDC2A识别为两个字符，比对的时候其中的字符匹配，所以返回true
+
+        /* 点字符 */
+        console.log('===点字符=====');
+        // 点字符在正则表达式中，表示除了换行符以外的任意单个字符，但对于码点大于0*FFFF的字符，点字符串无法识别，必须前面加上u修饰符
+        let z = '正'
+        console.log(/^.$/.test(z));
+        console.log(/^.$/u.test(z));
+
+        console.log('====Unicode 字符表示法====');
+        /* es6新增了大括号表示unicode字符，这种字符在正则中必须使用 u 修饰符才能识别吗否则会被解读为量词,量词是无法识别大于0xFFFF的unicode字符的。 */
+        console.log(/\u{61}/.test('a')); // false
+        console.log(/\u{61}/u.test('a')); // true
+
+        console.log('====i 修饰符====');
+        /* i 修饰符为不区分大小写，对于大于0xFFFF的unicode的修饰符,后面需要加上 u  */
+        console.log(/[a-z]/i.test('\u212A')); // false 
+        console.log(/[a-z]/iu.test('\u212A')); // true
+
+        console.log('====y 修饰符===');
+        /* 
+        y修饰符，即为 粘连(sticky)修饰符
+        在正则匹配中，g为全局匹配，没有位置限制
+        y则有位置限制，必须在上一次匹配完后的下一个字符串的的第一位开始匹配
+        */
+        let a = 'aaa-aa-a'
+        let r = /a+/y
+        let r2 = /a+/g
+        console.log(r.exec(a)); // aaa
+        console.log(r2.exec(a)); // aaa
+        // 第二次匹配 y在上次匹配完后的第一个位置开始匹配，字符串 - 无法匹配上
+        console.log(r.exec(a)); // null  // 其实只需要修改一下正则保证每次匹配上就行了 /a+-/y
+        console.log(r2.exec(a)); // aa
+
+        // RegExp.prototype.sticky 用来检查是否设置了 y 修饰符
+        let a1 = /heelo\d/y
+        console.log(a1.sticky); // true
 
 
-       
+        console.log('===检测正则表达式修饰符以及正文===');
+        /* 
+        source 返回正则匹配规则
+        flags 返回正则的修饰符
+        */
+        let rul = /abc/ig
+        console.log(rul.source); // abc
+        console.log(rul.flags); // ig
     </script>
 </body>
+
 </html>
