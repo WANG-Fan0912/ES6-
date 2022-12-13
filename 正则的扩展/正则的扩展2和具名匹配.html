@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        console.log('=====具名组匹配=====');
+        /* 
+          正则表达式使用圆括号进行组的匹配
+          正则内有3组圆括号，每组圆括号代表着一个匹配，匹配结果可以从组中提取出来
+        */
+       let rul = /(\d{4})-(\d{2})-(\d{2})/
+       let r = rul.exec('2022-12-13')
+       console.log(r);
+       console.log(r[1]);  // 2022
+       console.log(r[2]);  // 12
+       console.log(r[3]);  // 13
+
+       /* 这种组的匹配有一个问题就是不够语义化，并且通过下标取值，如果顺序该表，那么下标也要对应改变才行
+          es2018 引入了"具名组匹配"，可以给每个组取别名，通过别名提取结果
+          语法： (?<别名>正则)
+       */
+      let rul2 = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/
+      let r2 = rul2.exec('2022-12-13')
+      console.log(r2); 
+      console.log(r2.groups.year);  // 2022
+      console.log(r2.groups.month);  // 12
+      console.log(r2.groups.day);  // 13
+      console.log(r2.groups.minute);  // undefined  如果没有比配，那么对象属性为undefined
+
+
+      console.log('=====解构赋值和替换======');
+      /* 
+        解构赋值和替换
+        具名匹配取别名后，在正则的groups中，匹配的属性实际上是一个对象
+        通过解构赋值可以直接从匹配结果上为变量赋值
+        . 可以匹配任意字符，查找单个字符，除了换行和行结束符。
+        n* 匹配任何包含零个或多个 n 的字符串。
+      */
+     let {groups : {hours,minute}} = /^(?<hours>.*):(?<minute>.*)/.exec('12:49')
+     console.log(hours,minute);  // 12  49
+
+     /* 字符串替换时，使用$<组名>进行替换
+        将匹配的字符串位置替换
+        不影响原正则表达式
+     */
+     let rul4 = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/u
+     console.log('2022-12-13'.replace(rul4,'$<day>/$<month>/$<year>')); // 13-12-2022
+     console.log(rul4);  // /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/u
+
+        /* 
+         replace()第二个参数可以是一个函数
+         matched   // '2022-12-13' 匹配结果
+         params1   // 第一个组匹配2022
+         param2    // 第一个组匹配12
+         params3   // 第一个组匹配13
+         position  // 匹配开始的位置 0
+         sources   // 原字符串 2022-12-13
+         groups    // 具名组构成的一个对象 {year, month, day}
+        */
+       let data = '2022-12-13'.replace(rul4,(matched,params1,param2,params3,position,sources,groups)=>{
+        let {day,month,year} = groups;
+        return `${day}/${month}/${year}`
+       })
+       console.log(data);   // 13-12-2022
+
+       console.log('=====引用======');
+       /* 引用 */
+       /* 如果要在正则表达式内部引用某个"具名组匹配"，可以使用 \k<组名> 的写法 */
+       let str = /^(?<word>[a-z]+)!\k<word>$/
+       console.log(str.test('abc!abc'));  // true  引用了具名匹配，前后都是abc,前后字符一致
+       console.log(str.test('abc!ab'));   // false 引用了具名匹配，前后字符不匹配，但是第二个少一个c 
+
+       /* 
+       数字引用
+       首先需要明确分组的概念，即正则中的（）中的内容是一个分组，里面的内容作为一个整体引用。如果在分组后面接上“\数字”，表示匹配第几个分组。
+       */
+      let str2 = /^(\d{2})([a-z]+)\1$/
+      console.log(str2.test('11abcd'));  // false 问题出在结尾是英文，这里结尾使用了\数字，1表示匹配第一个分组，第一个分组是必须是2个数字，这里的结尾用的英文所以返回false
+      console.log(str2.test('11aa11'));  // true
+
+      // 具名匹配的引用和数字引用可以同时使用
+      let str3 = /^(?<word>[a-z]+)-(\d{2})-\k<word>-\2$/
+      console.log(str3.test('a-11-a-11')); // true
+      console.log(str3.test('a-11-a-aa')); // false
+   
+      console.log('====d 修饰符：正则匹配索引====');
+      /* d 修饰符：正则匹配索引
+         es2022新增d修饰符，可以在exec()、match()的返回结果添加indices属性
+         在该属性上可以拿到匹配的开始位置和结束位置
+         下标从0开始
+      */
+     let text = 'abcdefg'
+     let te = /bc/d
+     let result = te.exec(text)
+     console.log(result.index);  // 1   拿到bc匹配的起始位置，下标为1
+     console.log(result.indices);  // [1,3]  拿到bc匹配的开始和结束位置
+     // !!!!******这里需要注意的是，匹配的字符串开始位置是字符串的第一个值，匹配的结束位置，并不在返回结果中，正确来说，匹配的结束位置是匹配字符串末尾下一个位置
+
+     /* 如果正则中包含组匹配，那么indices属性对应的数组就会包含多个成员，并且提供每个组的开始位置和结束位置 */
+     let text2 = 'abccdef'
+     let te2 = /bc+(de)/d
+     let result2 = te2.exec(text2)
+     console.log(result2.indices);  // [1,6][4,6] 
+      // 这里的匹配并不是单个的匹配，而是整体，最外层的bc其实不参与单独的匹配，而是放到bcde整体中，所以第一个数组打印的是1,6，b的下标为1，e的下标为6
+      // 组会单独进行匹配，d的下标为4，e的下标为6
+
+      /* 多个组匹配以及下标 */
+     let text3 = 'abccdefgh'
+     let te3 = /bc+(de(fg))/d
+     let result3 = te3.exec(text3)
+     console.log(result3.indices);  // [1,8][4,8][6,8] 
+     // 匹配的顺序：bcdefg、defg、fg，对应的打印结果[1,8][4,8][6,8] 
+
+    /* 如果正则表达式包含具名匹配，那么indices.groups的属性会是一个对象，可以从该对象获取具名组匹配的开始位置和结束位置 */
+    let text4 = 'abcdefgh'
+    let te4 = /bc+(?<word>de)/d
+    let result4 = te4.exec(text4)
+    console.log(result4.indices); // [1,5][3,5]
+    console.log(result4.indices.groups); // {word : [3,5]}
+    /* 如果未匹配上则打印undefined */
+
+
+    console.log('=====String.prototype.matchAll()=====');
+    /* matchAll()可以一次性取出所有匹配，返回的是遍历器（Iterator）而不是数组 */
+    let strings = 'test1test2test3';
+    let regex = /t(e)(st(\d?))/g;
+    for(let match of strings.matchAll(regex)){
+      console.log(match);  // 返回所有匹配
+    }
+    // 转为数组的方法一
+    console.log([...strings.matchAll(regex)]); // 返回所有匹配，结果为数组
+    // 转为数组的方法二
+    console.log(Array.from(strings.matchAll(regex))); // 返回所有匹配，结果为数组
+   
+
+    </script>
+</body>
+</html>
