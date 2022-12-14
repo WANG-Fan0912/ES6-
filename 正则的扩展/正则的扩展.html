@@ -34,8 +34,7 @@
         console.log('======u 修饰符========');
         /* es6对正则表达式添加了u修饰符，表示为==Unicode模式==，用来处理大于\uFFFF的Unicode字符 */
         console.log(/^\uD83D/u.test('\uD83D\uDC2A')); // false 这里加上u.变成了es6支持，可以将\uD83D\uDC2A转译为一个字符，比对不匹配返回false
-        console.log(/^\uD83D/.test(
-            '\uD83D\uDC2A')); // true  这里没有加u.为es5支持，无法识别4个字节的UTF-16编码。会将\uD83D\uDC2A识别为两个字符，比对的时候其中的字符匹配，所以返回true
+        console.log(/^\uD83D/.test('\uD83D\uDC2A')); // true  这里没有加u.为es5支持，无法识别4个字节的UTF-16编码。会将\uD83D\uDC2A识别为两个字符，比对的时候其中的字符匹配，所以返回true
 
         /* 点字符 */
         console.log('===点字符=====');
@@ -45,7 +44,7 @@
         console.log(/^.$/u.test(z));
 
         console.log('====Unicode 字符表示法====');
-        /* es6新增了大括号表示unicode字符，这种字符在正则中必须使用 u 修饰符才能识别吗否则会被解读为量词,量词是无法识别大于0xFFFF的unicode字符的。 */
+        /* es6新增了大括号表示unicode字符，这种字符在正则中必须使用 u 修饰符才能识别否则会被解读为量词,量词是无法识别大于0xFFFF的unicode字符的。 */
         console.log(/\u{61}/.test('a')); // false
         console.log(/\u{61}/u.test('a')); // true
 
@@ -86,7 +85,7 @@
 
         console.log(' ==== s 修饰符 ： dotAll模式');
         /* 
-          正则表达式zhong ，点(.)是一个特殊字符，代表任意字符，但是有两种例外
+          正则表达式中，点(.)是一个特殊字符，代表任意字符，但是有两种例外
           第一种：四个字节的UTF-16字符，这个使用 u 修饰符解决
           第二种：行终止符，使用 s 修饰符解决
         */
@@ -111,7 +110,7 @@
         console.log('====先行断言==后行断言===');
         console.log('==先行断言==');
         /* 先行断言指的是，x在y前面才匹配
-           /x(?=y)/   x在y符号前才匹配   xxx = y
+           /x(?=y)/   x在y符号前才匹配
         */
         let look = '100% 东方不败'
         console.log(/\d+(?=%)/.exec(look)); // 100
