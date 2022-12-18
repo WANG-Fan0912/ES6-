@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看内容</div>
+
+    <script>
+        console.log('=======二进制和八进制表示法=====');
+        /* 
+          ES6提供了二进制和八进制数值的新的写法，分别用前缀0b(或0B)和0o或(0O)表示
+        */
+       console.log(0b111110111 === 503) // true;
+       console.log(0o767 === 503); // true
+
+       /* 在es5开始，严格模式中，八进制不允许使用前缀0 表示，否则会报错 */
+       // 严格模式
+       (function(){
+         console.log(0o11 === 011); // 报错
+       })()
+    //    非严格模式
+    // (function(){
+    //      console.log(0o11 === 011); // true
+    //    })()
+
+       /* 如果要将0b和0o前缀的字符串数值转十进制，使用Number即可 */
+       Number('0o111')  // 7
+       Number('0o10')  // 8
+
+
+       console.log('====数值分隔符====');
+       /* 数值分隔符 */
+       /* 较长的数值允许添加分隔符，es2021允许js的数值使用下划线（_）作为分隔符 */
+       let num = 1_000_000_000
+       console.log(1000000000 === num);  // true
+       /* 分隔符并不影响原始值 */
+
+       // 分隔符没有间隔位数限制
+       let num2 = 1_00_0000_00
+       console.log(100000000 === num2);
+
+       /* 小数和科学计数法也可以使用数值分隔符 */
+       console.log(0.00_01); // 0.0001
+       console.log(1e10_000); // Infinity
+
+       /* 需要注意的是
+          _ 不能放在数值的最前面或最后面
+          _ 不能两个或以上的分隔符连在一起使用
+          _ 小数点的前后不能有分隔符
+          _ 科学计数法中，表示指数的E或e前后不能有分隔符
+       */
+      /* 
+       // 全部报错
+        3_.141
+        3._141
+        1_e12
+        1e_12
+        123__456
+        _1464301
+        1464301_
+      */
+     /* 其它进制的数值也可以使用分隔符 */
+     console.log(0b1010_0001_1000_0101);  // 二进制
+     console.log(0xA0_B0_C0);  // 十六进制
+
+    //  进制的前缀前后不能使用分隔符
+    // 0b、0B、0o、0O、0x、0X
+
+    /* 
+     不支持数值分隔符的函数：
+     1、Number()
+     2、parseInt()
+     3、parseFloat()
+    */
+   console.log(Number('123_456'));  // NaN
+   console.log(parseInt('123_456'));  // 123
+
+
+   console.log('=======Number.isFinite(), Number.isNaN()======');
+   /* 
+   Number.isFinite():用来检查一个数值是否为有限的,即不是Infinity
+   */
+  console.log(Number.isFinite(10));  // true
+  console.log(Number.isFinite(1.2));  // true
+  console.log(Number.isFinite(NaN));  // false
+  console.log(Number.isFinite(Infinity));  // false
+  console.log(Number.isFinite('东方不败'));  // false
+  console.log(Number.isFinite('123'));  // false
+  console.log(Number.isFinite(true));  // false
+
+  /* Number.isNaN() : 用来检查一个值是否为NaN
+     如果参数不是NaN,返回false
+  */
+  console.log(Number.isNaN(NaN));  // true
+  console.log(Number.isNaN(10));  // false
+  console.log(Number.isNaN('10'));  // false
+  console.log(Number.isNaN(true));  // false
+  console.log(Number.isNaN(9/NaN));  // true
+  console.log(Number.isNaN('东方不败' * 10));  // true
+  console.log(Number.isNaN(true / true));  // true
+
+  /* 注意
+     它们与传统的全局方法isFinite()和isNaN()的区别在于，
+     传统方法先调用Number()将非数值的值转为数值，再进行判断，而这两个新方法只对数值有效。
+     Number.isFinite()对于非数值一律返回false,
+     Number.isNaN()只有对于NaN才返回true，非NaN一律返回false
+  */
+
+  console.log('=======Number.parseInt(),Number.parseFloat()==========');
+
+  /* 
+     es5 : parseInt()、parseFloat()
+     es6 : Number.parseInt(),Number.parseFloat()
+     行为完全保持一致
+  */
+ console.log(parseInt('12.55'));  // 12
+ console.log(Number.parseInt('12.55'));   // 12
+
+ console.log(parseFloat('12.55'));  // 12.55
+ console.log(Number.parseFloat('12.55'));   // 12.55
+
+ /* 这样做的目的是逐步减少全局性方法，使语言逐步模块化 */
+
+ console.log('======isInteger()======');
+ /* Number.isInteger()用来判断值是否为整数 */
+ console.log(Number.isInteger(15));  // true
+ console.log(Number.isInteger(15.1));  // false
+
+ // 如果不是数值则返回false
+ console.log(Number.isInteger('15'));  //false
+ console.log(Number.isInteger(true));  //false
+ console.log(Number.isInteger(NaN));  //false
+ console.log(Number.isInteger());  //false
+
+ /* 
+ JavaScript 采用 IEEE 754 标准，数值存储为64位双精度格式，
+ 数值精度最多可以达到 53 个二进制位（1 个隐藏位与 52 个有效位）
+ 如果数值的精度超过这个限度，第54位及后面的位就会被丢弃
+ 这种情况下，Number.isInteger可能会误判。 */
+ console.log(Number.isInteger(3.0000000000000002)) // true
+/* 
+上面代码中，Number.isInteger的参数明明不是整数，但是会返回true
+原因就是这个小数的精度达到了小数点后16个十进制位，转成二进制位超过了53个二进制位，
+导致最后的那个2被丢弃了。
+ */
+// !!!!! 总之，如果对数据精度的要求较高，不建议使用Number.isInteger()判断一个数值是否为整数。
+
+
+console.log('======Math对象的扩展======');
+
+console.log('===Math.trunc()===');
+/* Math.trunc()用于取出一个小数的小数部分，返回整数部分 */
+console.log(Math.trunc(5.1));  // 5
+console.log(Math.trunc(5.5));  // 5
+console.log(Math.trunc(-5.1)); // -5
+console.log(Math.trunc(-0.123));  // 0
+// 对于非数值，会先使用Number方法将其转换为数值再返回
+console.log(Math.trunc(true)); // 1
+console.log(Math.trunc(false)); // 0
+console.log(Math.trunc(null)); // 0
+console.log(Math.trunc('10.123')); // 10
+
+// 对于空值或无法转换的值，返回NaN
+console.log(Math.trunc(NaN));  // NaN
+console.log(Math.trunc('hello'));  // NaN
+console.log(Math.trunc());  // NaN
+
+console.log('===Math.sign()===');
+/* Math.sign()方法用来判断一个数到底是正数、负数、还是零。
+   非数值会先转换为数值
+   返回值：
+   参数为正数 ： +1
+   参数为负数 ： -1
+   参数为0 ： 0
+   参数为-0 ： -0
+   其他 ： NaN
+*/
+  console.log(Math.sign('5'));  // 1
+  console.log(Math.sign(5)); // 1
+  console.log(Math.sign(-5)); // -1
+  console.log(Math.sign(0)); // 0
+  console.log(Math.sign(-0)); // -0
+  console.log(Math.sign(true)); // 1
+  console.log(Math.sign('hello')); // NaN
+
+  console.log('===Math.hypot()===');
+  /* Math.hypot()方法返回所有参数的平方和和平方根 */
+  console.log(Math.hypot(3,4));  // 5
+  console.log(Math.hypot(3,4,5)); // 7.0710678118654755
+  console.log(Math.hypot(3,4,'5')); // 7.0710678118654755
+  console.log(Math.hypot(3,4,'hello')); // NaN
+  console.log(Math.hypot()); // 0
+
+  console.log('==========BigInt 数据类型============');
+  /* js的所有数字都保存成64位浮点数，这给数值的表示带来了很大的限制
+     一 ：数值的经度只能到53个二进制位，相当于16个十进制位，大于这个范围的正数无法精确表示,使得js不适合进行科学和金融方面的精确计算
+     二 ：大于等于2的1024次方的数值，js无法表示，会返回Infinity 
+  */
+   
+  // 超过53个二进制的数值们无法保持精度
+   console.log(Math.pow(2,53) === Math.pow(2,53) + 1);  // true
+
+   // 超过2的1024次方的数值，无法表示
+   console.log(Math.pow(2,1024));  // Infinity
+
+   /* es2020引入了新的数据类型BigInt(大整数）
+      第八种数据类型
+      BigInt只用来表示整数，没有位数的限制
+      任何位数的整数都可以精确表示
+      语法 ： 数据n
+   */
+  let a = 2172141653n
+  let b = 15346349309n
+
+  console.log(a*b);  // 33334444555566667777n  // 可以保持精度
+
+  let c = 2172141653
+  let d = 15346349309
+  console.log(c * d);  // 33334444555566670000 // 无法保持精度
+
+   /* 
+   与整数的区别
+   123  普通整数
+   123n BigInt
+
+   BigInt 类型的数据必须添加后缀n
+   */
+
+   /* BigInt与普通整数是两种值，它们之间并不相等 */
+   console.log(15n === 15); // false
+   // 数据类型返回bigint
+   console.log(typeof(15n)); // bigint
+
+   console.log('============BigInt函数===========');
+   /* 
+     BigInt可以用来做数据转换，转换的方法与Number()基本一致
+   */
+  console.log(BigInt(123));  // 123n
+  console.log(BigInt('123')); // 123n
+  console.log(BigInt(true)); // 1n
+  console.log(BigInt(false)); //0n
+
+//   console.log(BigInt());   //  TypeError
+//   console.log(BigInt('hello'));   //  SyntaxError
+/* 字符串 123n 会无法解析成Number类型，所以报错 */
+//   console.log(BigInt('123n'));   //  SyntaxError
+//   console.log(BigInt(null));   //  TypeError
+//   console.log(BigInt(NaN));   //  TypeError
+/* 参数是小数也会报错 */
+//   console.log(BigInt(1.2));   //  RangeError
+//   console.log(BigInt('1.2'));   //  SyntaxError
+
+/* BigInt继承了Object对象的两个实例方法
+
+   BigInt.prototype.toString()
+   BigInt.prototype.valueOf()
+
+
+   它还继承了 Number 对象的一个实例方法
+   BigInt.prototype.toLocaleString()
+
+   此外还提供了三个静态方法
+   BigInt.asUintN(width, BigInt)
+   BigInt.asIntN(width, BigInt)
+   BigInt.parseInt(string[, radix])
+*/
+
+console.log('======BigInt 转换规则=======');
+// 可以使用Boolean|Number|String 这三个方法，将BigInt转换为布尔、数值、字符串类型
+// 转换后，后缀n会消失
+console.log(Boolean(0n));  // false
+console.log(Number(2n));  // 2
+console.log(String(2n));  // '2'
+// 取反 ！ 运算符可以转换布尔值
+console.log( !0n );  // true
+console.log( !1n );  // false
+
+console.log('=====BigInt 数学运算=====');
+/* 
+   在数学运算方面， + - *和**这四个运算符与number类型基本一致
+   除法运算 / 会舍去小数部分，返回一个整数
+*/
+ console.log( 9 / 5 );  // 1.8
+ console.log(9n / 5n);  // 1n  舍去小数
+
+ /* 
+   几乎所有的数值运算符都可以用在 BigInt，但是有两个例外。
+
+   不带符号的右移位运算符>>>
+   一元的求正运算符+
+ */
+
+
+
+ /*   BigInt 不能与普通数值混合运算,因为这样精度会丢失 */
+ //console.log( 2n + 5);  // TypeError
+
+ /* 同样的原因，如果一个函数参数预期是 Number 类型，但是得到的是一个 BigInt，就会报错。 */
+// 错误的写法
+// Math.sqrt(4n) // 报错
+
+// 正确的写法
+Math.sqrt(Number(4n)) // 2
+
+console.log('=========BigInt其他运算=======');
+/* 
+  BigInt 对应的布尔值，与Number类型一致
+  0n : false
+  1n : true
+*/
+
+let n = 1n
+if(n){
+   console.log(true);
+} else {
+   console.log(false);
+}  // true
+
+/* 比较运算符和相等运算符允许 BigInt 与其他类型的值混合计算，因为这样做不会损失精度。 */
+ console.log( 0n < 1 );  // true
+ console.log( 0n == false);  // true
+ console.log( 0n == 0);  // true
+ console.log( 0n === 0);  // false
+
+
+    </script>
+</body>
+</html>
