@@ -97,7 +97,93 @@
 
         /* 如果去掉全局变量 foo='out' 报错，赋值了一个未声明的变量 */
 
+        /* 应用
+           可以利用参数默认值，如果省略默认值则抛出一个错误
+        */
+    //    function throwErr(){
+    //     throw new Error('参数不得省略')
+    //    }
+    //    function omits(mustfn = throwErr()){
+    //      return mustfn
+    //    }
+    //    let om = omits()   // 未传参抛出错误 ： 参数不得省略
+    //    console.log(om);
         
+    /* 如果将参数默认值设置为 undefined 则表示该参数是可以省略的 */
+
+    console.log('============rest参数============');
+    // 参数的剩余运算符
+    function residue(...val){
+        console.log(val);  // [1,2,3]
+    }
+    residue(1,2,3)
+
+    // 剩余运算符只能放到最后一位，否则报错
+    // function residue2(...val,b){}  // 剩余运算符不是最后一位，报错
+    function residue3(c,...val){
+        console.log(c,val);  // 1 [2,3,4,5]
+    }
+    residue3(1,2,3,4,5)
+
+    console.log('===========严格模式============');
+    /* 
+       ES5开始，函数内部可以设定为严格模式： function s(){ 'use strict'// 严格模式 }
+       ES6做了修改，规定只要函数参数使用了默认值、解构赋值、扩展运算符，那么函数内部就不能显示设定为严格模式，否则报错
+    */
+
+    // es5严格模式
+    function s(){
+        'use strict'   // 严格模式
+        // 代码.....
+    }
+
+    // es6严格模式  报错，因为设置了函数默认值
+    // function s2(a,b = a){
+    //     'use strict'
+    // }
+
+    // 报错，使用了解构赋值
+    // const s3 = function({a,b}){
+    //     'use strict'
+    // }
+
+    // 报错，使用了剩余运算符
+    // const s4 = (...a) => {
+    //     'use strict'
+    // }
+
+    /* es6这样设置的原因是，函数内部的严格模式应该同样适用于函数体和函数参数，
+       但是，函数执行的时候会先执行参数，再执行函数体，这样就有一些不严谨的情况，
+       只有函数体中才能知道参数是否应该以严格模式执行，但是函数的参数确是先执行，
+       所以es6修改了函数参数关于严格模式的行为。
+    */
+
+    // function s5(val = 070){
+    //     'use strict'
+    //     return val
+    // }
+    // s5()  // 报错
+    // 这一段，函数的默认值是八进制070，严格模式下不能使用前缀0表示八进制，所以报错。
+    // 但实际上是因为函数设置了默认参数的原因，函数先执行参数，在进函数体，由于es6限制，报错。
+
+    // 有两种方法可以规避这种限制
+    // 第一种：设置全局严格模式
+    'use strict'
+    function s6(val = 100){
+        console.log(val);
+    }
+    s6()  // 100
+
+    
+    // 第二种方法：把函数嵌套在一个无参数的立即执行函数里
+    // 匿名函数的调用方法：(function(val = 200){return val})(),将整个return的函数用()套起来，尾部加一个()调用即可
+    const s7 = () => {
+        'use strict'
+        let a;
+        return (function(val = 200){ return val })()
+    }
+    console.log(s7());
+
 
 
 
