@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+    
+    <script>
+        console.log('=====暂时性死区======');
+        /* 
+        暂时性死区也就是变量声明到声明完成的区块，这个区块是一个封闭的作用域，直到声明完成。
+        如果在变量声明之前使用该变量，那么该变量是不可用的，也就被称为暂时性死区。
+        var 没有暂时性死区， 因为var会变量提升
+        let const 有块级作用域，变量不会提升，存在暂时性死区
+        */
+       // console.log(a); // 报错 暂时性死区 Cannot access 'a' before initialization
+       // let a = '东方不败' 
+
+       // console.log(b); // 报错 暂时性死区 Cannot access 'b' before initialization
+       // const b = '东方不败'
+
+
+       console.log(c);   // undefined 因为var存在变量提升
+       var c = '东方求败'  
+
+       /* 
+       ES6 规定，如果代码区块中存在 let 和 const 命令声明的变量，
+       这个区块对这些变量从一开始就形成了封闭作用域，直到声明语句完成，
+       这些变量才能被访问（获取或设置），否则会报错ReferenceError。
+       这在语法上称为“暂时性死区”（英temporal dead zone，简 TDZ），
+       即代码块开始到变量声明语句完成之间的区域。
+       */
+
+        console.log('=======函数作用域========');
+
+        console.log('===案例1===');
+        /* 
+        一旦设置了参数的默认值，函数进行声明初始化时，参数就会形成一个单独的作用域
+        等初始化结束，这个作用域就会小时，这种语法在不设置参数默认值时不会出现。
+        （暂时性死区）
+        */
+        /*  
+        在这个作用域里，y默认的x变量指向第一个参数x,而不是全局变量x
+        这里调用f函数，向x传递了数值2，y = x 那么 y = 2,打印结果为2
+         */
+        var x = 1
+        function f(x,y = x){
+            console.log(y);
+        }
+        f(2)  // 2
+       
+
+        console.log('===案例2===');
+        /* 
+          调用f2函数，由于未给f2函数任何参数，并且y2 = x2 形成一个单独的作用域
+          在这个作用域里x2并未定义，所以x2指向的是外层全局变量x2
+          y2 = x2 也就是 y2 = 1
+          函数内部的x2并没有起到任何作用
+        */
+
+        let x2 = 1
+        function f2(y2 = x2){
+            let x2 = 2
+            console.log(y2);
+        }
+        f2()  // 1
+
+        /* 但如果去掉全局变量x2则会报错，因为变量未声明，给y赋值了一个未声明的变量，报错 */
+
+
+        // 下面这个写法也会报错
+        /* 
+          由于函数的参数有默认值会产生单独的作用域，
+          那么这个作用域内，执行的结果未 let xx = xx
+          给 xx 赋值一个为声明的 xx 报错
+          (暂时性死区)
+        */
+        // var xx = 1
+        // function fxx(xx = xx){
+        //     console.log(xx);
+        // }
+        // fxx()
+
+
+        /* 如果函数的默认参数是函数，该函数的作用域也要遵循这个规则 */
+        let foo = 'out'
+
+        function bar(func = () => foo){
+            let foo = 'come'
+            console.log(func());
+        }
+        bar()  // out
+
+        /* 如果去掉全局变量 foo='out' 报错，赋值了一个未声明的变量 */
+
+        
+
+
+
+
+
+
+    </script>
+</body>
+</html>
