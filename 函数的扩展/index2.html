@@ -225,6 +225,12 @@
    }
    /* 在上面的例子中，x函数的最后一步调用函数g,这就是尾调用 */
 
+   /* 
+   尾调用之所以与其他调用不同，就在于它的特殊的调用位置。
+
+   我们知道，函数调用会在内存形成一个“调用记录”，又称“调用帧”（call frame），保存调用位置和内部变量等信息。如果在函数A的内部调用函数B，那么在A的调用帧上方，还会形成一个B的调用帧。等到B运行结束，将结果返回到A，B的调用帧才会消失。如果函数B内部还调用函数C，那就还有一个C的调用帧，以此类推。所有的调用帧，就形成一个“调用栈”（call stack）。
+   */
+
 
    /* 下面三种情况都不是尾调用 */
    // 情况一
@@ -272,6 +278,170 @@
 这就叫做“尾调用优化”（Tail call optimization），即只保留内层函数的调用帧。如果所有函数都是尾调用，那么完全可以做到每次执行时，调用帧只有一项，这将大大节省内存。这就是“尾调用优化”的意义。
 
 注意，只有不再用到外层函数的内部变量，内层函数的调用帧才会取代外层函数的调用帧，否则就无法进行“尾调用优化”。 */
+
+
+console.log('==============尾递归==========');
+/* 函数调用自身，称为递归。如果尾调用自身，就成为尾递归 */
+/* 
+   递归非常耗费内存，因为需要同时保存成千上百个调用帧，很容易发生“栈溢出”错误（stack overflow）。但对于尾递归来说，由于只存在一个调用帧，所以永远不会发生“栈溢出”错误。
+*/
+
+  function van(n){
+    if(n === 1) return 1
+    return n * van(n - 1)
+  }
+  console.log(van(5)); 
+  /* 上面代码是一个阶乘函数，计算n的阶乘，最多需要保存n个调用记录，复杂度O(n) */
+
+  // 改写成尾递归，只保留一个调用记录，复杂度O(1)
+  function van2(n,total){
+    if( n === 1) return total
+    return van2(n - 1, n * total)
+  }
+  console.log(van2(5,1));
+
+  /* 由此可见，“尾调用优化”对递归操作意义重大，所以一些函数式编程语言将其写入了语言规格。ES6 亦是如此，第一次明确规定，所有 ECMAScript 的实现，都必须部署“尾调用优化”。这就是说，ES6 中只要使用尾递归，就不会发生栈溢出（或者层层递归造成的超时），相对节省内存。 */
+ 
+
+  console.log('=========尾调用严格模式优化============');
+  /* 
+     es6的尾调用优化只在严格模式下开启，正常模式是无效的。
+     因为正常模式下，函数内部有两个变量，可以跟踪函数的调用栈。
+     - func.arguments : 返回调用时函数的参数
+     - func.caller : 返回调用当前函数的那个函数
+     尾调用优化发生时，函数的调用栈会改写，因此上面两个变量就会失真。
+     严格模式禁用这两个变量，所以尾调用模式仅在严格模式下生效。
+  */
+//   function restricted() {
+//     'use strict';
+//     restricted.caller;    // 报错
+//     restricted.arguments; // 报错
+//   }
+//     restricted();
+
+console.log('============尾递归优化的实现============');
+/* 尾递归优化只在严格模式下生效，那么正常模式下也是可以实现的，
+   原理：尾递归之所以需要优化，原因是调用栈太多，造成溢出，那么只要减少调用栈，
+   就不会溢出。采用 '循环' 换掉 '递归' 即可解决。
+*/
+
+// 正常递归函数
+// function sum(x,y){
+//     if( y > 0 ){
+//         return sum(x + 1 , y - 1)
+//     } else {
+//         return x
+//     }
+// }
+// console.log(sum(1,100000));  // 报错 Maximum call stack size exceeded
+// 上面代码中，sum是一个递归函数，参数x是需要累加的值，参数y控制递归次数。一旦指定sum递归 100000 次，就会报错，提示超出调用栈的最大次数。
+
+console.log('===蹦床函数===');
+/* 可以将递归执行转换为循环执行 */
+function trampoline(f){
+    while(f && f instanceof Function){
+        f = f()
+    }
+    return f
+}
+/* 上面就是蹦床函数的一个实现，它接收一个函数f作为参数。只要f执行后返回一个函数，就继续执行。
+注意：这里是返回一个函数，然后执行该函数，而不是函数里面调用函数，这样就避免了递归执行，
+从而消除了调用栈过大的问题。
+  */
+ // 然后，要做的就是将原来的递归函数，改写为每一步返回另一个函数。
+ function sum(x,y){
+    if( y > 0 ) {
+        return sum.bind(null,x + 1 , y - 1)
+    } else {
+        return x
+    }
+ }
+ console.log(trampoline(sum(1,1000000)));  // 1000001
+
+
+
+/* 蹦床函数并不是真正的尾递归优化，下面的实现才是 */
+function tco(f){
+    let value;
+    let active = false;
+    let accumulated = [];
+
+    return function accumulator() {
+        accumulated.push(arguments);
+        if(!active) {
+            active = true
+            while(accumulated.length){
+                value = f.apply(this,accumulated.shift())
+            }
+            active = false
+            return value
+        }
+    }
+}
+
+let sum2 = tco(function(x,y) {
+    if(y > 0) {
+        return sum2(x + 1, y - 1)
+    } else {
+        return x
+    }
+})
+console.log(sum2(1,1000000));  // 1000001
+
+/* 上面代码中，tco函数是尾递归优化的实现，它的奥妙就在于状态变量active。默认情况下，这个变量是不激活的。一旦进入尾递归优化的过程，这个变量就激活了。然后，每一轮递归sum返回的都是undefined，所以就避免了递归执行；而accumulated数组存放每一轮sum执行的参数，总是有值的，这就保证了accumulator函数内部的while循环总是会执行。这样就很巧妙地将“递归”改成了“循环”，而后一轮的参数会取代前一轮的参数，保证了调用栈只有一层。 */
+
+
+
+
+
+
+
+console.log('==========函数参数的尾逗号==========');
+// es5报错
+// function fanc (params1,params2,){ }
+
+// es6 允许最后一个参数右面加一个逗号
+function fanc2 (params1,params2,){ console.log('尾逗号'); }
+fanc2()  // 尾逗号
+
+let arr = [1,2,3,]  // 数组允许尾逗号
+console.log(arr);
+let obj = {name:'东方',title:'不败',}
+console.log(obj);  // 对象允许尾逗号
+
+
+
+
+
+
+console.log('=========toString优化=========');
+ function /* 注释 */ tos () {}
+ console.log(tos.toString()); // function /* 注释 */ tos () {}
+ /* 函数中有注释，并且tos和()间有一个空格
+    es5中只会返回 function tos() {} ， toString()方法把注释和空格都省掉了
+    es6明确规定，要求返回和原始函数一模一样的代码，中间的注释以及函数名后面的空格等
+ */
+
+
+
+
+ console.log('===========catch命令的参数省略==============');
+ /* js中 try...catch解构，es2019前明确要求，catch命令后必须跟参数，接收try抛出的错误对象 */
+ try {
+    // ...
+ } catch (err) {
+    // 处理错误
+ }
+
+ // 很多时候catch抛出的参数都用不到，但是为了确保语法正确，参数必须得写。
+ /* es2019做出了修改，允许catch语句省略参数 */
+ try {
+   // ...
+ } catch {
+   // ...
+ }
+
+
 
 
 
