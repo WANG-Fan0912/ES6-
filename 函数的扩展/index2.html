@@ -8,10 +8,273 @@
 </head>
 <body>
     <div>打开控制台查看结果</div>
+    <div id="news"></div>
 
     <script>
         console.log('=========name属性===========');
-        
+        /* 函数的name属性返回该函数的函数名 */
+        function fan(){}
+        console.log(fan.name);  // fan
+
+        /* 
+         需要注意的是，es5的name属性与es6不同
+         es5中如果将匿名函数赋值给变量，name会返回空字符串
+         es6中会返回实际的函数名
+        */
+    //    let fan2 = function(){}
+       // es5  返回 ""
+    //    console.log(fan2.name);
+       // es6  返回 fan2
+    //    console.log(fan2.name);
+
+
+    console.log('==========箭头函数==========');
+    /* es6允许使用箭头 => 定义函数 */
+    let v = 100
+
+    let f = a => v;
+    // 等同于
+    let f2 = function (a){
+     return v;
+    }
+    // 等同于
+    let f3 = (a) => {
+        return v
+    }
+    console.log(f());  // 100
+    console.log(f2()); // 100
+    console.log(f3()); // 100
+
+    /* 箭头函数中，使用圆括号代表参数的部分 */
+    // 无参数
+    let a1 = () => 5;
+    // 等同于
+    let a2 = function () {return 5}
+    // 等同于
+    
+    // 有参数
+    let a3 = (num1,num2) => num1 + num2
+    // 等同于
+    let a4 = function (num1,num2) { return num1 + num2}
+    /* 如果箭头函数中的代码块为一句话，可以省略大括号
+       如果箭头函数中的代码块多于一句，需要使用大括号括起来，使用return可以返回数据
+    */
+         
+    /* 大括号被解释为代码块，如果箭头函数返回的是一个对象，就必须在对象外面加上括号，否则报错 */
+    // let b1 = id => { id : id , name : '东方不败'}  // 报错
+    let id = 1
+    let b2 = id => ({id,name:'东方不败'})
+    console.log(b2());
+
+    // 如果这里不给参数，return的id会向上找外层id，所以id为1
+    function b3(){
+      return {id,name:'东方求败'}
+    }
+    console.log(b3());
+
+    // 这里有一个参数，但是调用的时候没有传参，所以id为undefined
+    function b4(id){
+      return {id,name:'东方求败'}
+    }
+    console.log(b4());
+    
+    /* 报错，这里的参数有一个作用域，let id = id，id为一个为声明的变量，赋值id ： id报错 */
+    // function b5(id = id){
+    //   return {id,name:'东方求败'}
+    // }
+    // 不携带参数获取外层全局变量的正确方法
+    function b5(val = id){
+      return {val,name:'东方求败'}
+    }
+    console.log(b5());
+
+
+    /* 下面是一种特殊情况，虽然可以运行，但得到的结果是错误的
+       因为大括号被认为是代码块，在这里不是return，而是执行了一个表达式 a:1，
+       表达式执行完后结束了，没有返回值
+     */
+    let foo = () => {a : 1}
+    console.log(foo());  // undefined
+
+
+    /* 如果箭头函数只有一句话且没有返回值，可以使用下面的写法，不需要写大括号,直接写内容即可 */
+    let foo2 = () => console.log('无返回值');
+    foo2()
+
+    /* 箭头函数解构赋值 */
+    let foo3val = {id:1,name:'孙悟空'}
+    let foo3 = ({id,name}) => console.log(`id:${id}，名称：${name}`);
+    foo3(foo3val)  // id:1，名称：孙悟空
+
+    /* 箭头函数可以使表达更简洁，简单的工具函数封装更加直观
+       一行代码完成求奇偶的工具函数封装
+     */
+    const isEven = n => n % 2 === 0
+    console.log(isEven(2));  // true
+    console.log(isEven(3));  // false
+
+    /* 箭头函数还可以简化回调函数 */
+    // 普通函数写法
+    let fil = [1,2,3].filter(function(x){
+        return x == 2
+    })
+    console.log(fil); // [2]
+    
+    // 箭头函数写法，一行搞定
+    let fil2 = [1,2,3].filter(el=> el == 2 )
+    console.log(fil2); // [2]
+
+    /* 箭头函数的使用注意点
+       1、箭头函数没有this对象
+       2、不可以当做构造函数，也就是说，不可以对箭头函数使用new命令，否则报错
+       3、不能使用arguments对象，改对象在函数体内不存在。
+       4、不能使用yield命令，因此箭头函数不能用作Generator函数
+       **箭头函数导致this总是指向函数定义生效时所在的对象**
+    */
+   /* 箭头函数的this指向 */
+   function arrows(){
+    /* 没用箭头函数的直接输出，由于call改变了this指向，这里指向arrows */
+    console.log('name:',this.name);     // 中国工艺美术史
+
+     /* 使用箭头函数，由于call改变了this指向，但这里是定时器，指向window，由于定时器用了箭头函数，
+        这里定时器指向的是调用函数定义生效时所在的对象
+     */
+    setTimeout(()=>{
+       console.log('name:', this.name);  // 中国工艺美术史
+    },100)
+
+    /* 这里定时没有使用箭头函数，及时使用call()方法，在函数内部的定时器还是指向window */
+    setTimeout(function(){
+        console.log('name:', this.name); // 艺术概论
+    },100)
+
+   }
+   var name = '艺术概论'
+   /* call函数：
+      第一个参数表示：想让this指向的对象(obj)
+      第二个桉树表示：传进去的实参
+      如果第call的第一个参数未传值，或者传值为null，那么arrows中this指向为window
+      这里传入第一个传参数，this指向obj对象
+   */
+   arrows.call({name : '中国工艺美术史'})  // name: 中国工艺美术史
+
+
+
+   // let book = '疾风劲草' // let有块级作用域，不指向window
+   var book = '疾风劲草'
+   function arrows2(){
+    console.log('text：',this.book);
+   }
+   arrows2()  // text： 疾风劲草
+
+
+
+   /* 
+     箭头函数没有自己的this，导致内部的this就是外层代码块的this。
+     正是因为没有this，所以也就不能用作构造函数。
+     箭头函数里面根本没有自己的this，而是引用外层的this。
+     下面是 Babel 转箭头函数产生的 ES5 代码，就能清楚地说明this的指向。
+   */
+    /*     
+    // ES6
+    function foo() {
+    setTimeout(() => {
+        console.log('id:', this.id);
+    }, 100);
+    }
+
+    // ES5
+    function foo() {
+    var _this = this;
+
+    setTimeout(function () {
+        console.log('id:', _this.id);
+    }, 100);
+    } 
+    */
+   
+
+    console.log('=========箭头函数不适用场合============');
+    /* 1：对象内定义箭头函数 */
+    // let cat = {
+    //     level : 9,
+    //     jumps : ()=> {
+    //         this.level
+    //     }
+    // }
+    /* 在这个例子中，cat.jumps()是一个箭头函数，这是错误的。
+    如果cat.jumps()是一个普通函数， 该方法内部的this指向cat。
+    如果调用cat.jumps()是一个箭头函数时，this指向全局对象。因为对象不构成单独的作用域，
+    导致jumps箭头函数定义式的作用域是全局作用域。
+    */
+
+    /* 2：需要动态this的时候，不应该使用箭头函数 */
+    // let button = document.getElementById('news')
+    // button.addEventListener('click',()=>{
+    //     this.classList.toggle('on')
+    // })
+    /* 上面代码运行时，点击按钮报错，因为button监听函数是一个箭头函数，导致内部的this是
+    全局对象。如果改成普通函数，this就会动态指向被点击的按钮对象。
+    */
+   /* 另外，如果函数体很复杂，有许多行，或者函数内部有大量的读写操作，不单纯是为了计算值，这时也不应该使用箭头函数，而是要使用普通函数，这样可以提高代码可读性。 */
+
+   console.log('============尾调用优化===============');
+   /* 尾调用，其实就是指函数的最后一步调用另一个函数 */
+   function x(s){
+    return y(s)
+   }
+   /* 在上面的例子中，x函数的最后一步调用函数g,这就是尾调用 */
+
+
+   /* 下面三种情况都不是尾调用 */
+   // 情况一
+   /* 调用函数g后，还有赋值操作，不属于尾调用，及时语义完全一样 */
+   function x2(x){
+    let y = g(x)
+    return y
+   }
+   // 情况二
+   /* 调用后还有操作，不属于尾调用 */
+   function x3(x){
+    return g(x) + 1
+   }
+   // 情况三
+   /* 这里没有return,其实后续还可以进行操作，这里实际上默认return了一个undefined */
+   function x4(x){
+    g(x)
+   }
+
+   /* 尾调用不一定出现在函数尾部，只要是最后一步操作即可 */
+   function y(x){
+    if(x > 0){
+        return m(x)
+    }
+    return n(x)
+   }
+
+//    function f() {
+//     let m = 1;
+//     let n = 2;
+//     return g(m + n);
+//     }
+//     f();
+
+//     // 等同于
+//     function f() {
+//     return g(3);
+//     }
+//     f();
+
+//     // 等同于
+//     g(3);
+/* 上面代码中，如果函数g不是尾调用，函数f就需要保存内部变量m和n的值、g的调用位置等信息。但由于调用g之后，函数f就结束了，所以执行到最后一步，完全可以删除f(x)的调用帧，只保留g(3)的调用帧。
+
+这就叫做“尾调用优化”（Tail call optimization），即只保留内层函数的调用帧。如果所有函数都是尾调用，那么完全可以做到每次执行时，调用帧只有一项，这将大大节省内存。这就是“尾调用优化”的意义。
+
+注意，只有不再用到外层函数的内部变量，内层函数的调用帧才会取代外层函数的调用帧，否则就无法进行“尾调用优化”。 */
+
+
+
     </script>
 </body>
 </html>
