@@ -50,7 +50,7 @@
     let a1 = () => 5;
     // 等同于
     let a2 = function () {return 5}
-    // 等同于
+
     
     // 有参数
     let a3 = (num1,num2) => num1 + num2
@@ -64,21 +64,21 @@
     // let b1 = id => { id : id , name : '东方不败'}  // 报错
     let id = 1
     let b2 = id => ({id,name:'东方不败'})
-    console.log(b2());
+    console.log(b2());  // id : undefined ,name :'东方不败'
 
     // 如果这里不给参数，return的id会向上找外层id，所以id为1
     function b3(){
       return {id,name:'东方求败'}
-    }
-    console.log(b3());
+    } 
+    console.log(b3());  // id : 1 ,name :'东方不败'
 
     // 这里有一个参数，但是调用的时候没有传参，所以id为undefined
     function b4(id){
       return {id,name:'东方求败'}
     }
-    console.log(b4());
+    console.log(b4());  // id : undefined ,name :'东方不败'
     
-    /* 报错，这里的参数有一个作用域，let id = id，id为一个为声明的变量，赋值id ： id报错 */
+    /* 报错，这里的参数有一个作用域，let id = id，id为一个未声明的变量，赋值id ： id报错 */
     // function b5(id = id){
     //   return {id,name:'东方求败'}
     // }
@@ -86,7 +86,7 @@
     function b5(val = id){
       return {val,name:'东方求败'}
     }
-    console.log(b5());
+    console.log(b5());  // id : 1 ,name :'东方不败'
 
 
     /* 下面是一种特殊情况，虽然可以运行，但得到的结果是错误的
@@ -96,10 +96,15 @@
     let foo = () => {a : 1}
     console.log(foo());  // undefined
 
+    let foo2 = () => { return {a : 1} }
+    console.log(foo2());  // {a : 1}
+
 
     /* 如果箭头函数只有一句话且没有返回值，可以使用下面的写法，不需要写大括号,直接写内容即可 */
-    let foo2 = () => console.log('无返回值');
-    foo2()
+    let fooEmpty = () => void '无返回值';
+    console.log('无：',fooEmpty());  // 无： undefined
+    let fooHave = () => '有返回值'; 
+    console.log('有：',fooHave());  // 有： 有返回值
 
     /* 箭头函数解构赋值 */
     let foo3val = {id:1,name:'孙悟空'}
@@ -127,7 +132,7 @@
     /* 箭头函数的使用注意点
        1、箭头函数没有this对象
        2、不可以当做构造函数，也就是说，不可以对箭头函数使用new命令，否则报错
-       3、不能使用arguments对象，改对象在函数体内不存在。
+       3、不能使用arguments对象，该对象在函数体内不存在。
        4、不能使用yield命令，因此箭头函数不能用作Generator函数
        **箭头函数导致this总是指向函数定义生效时所在的对象**
     */
