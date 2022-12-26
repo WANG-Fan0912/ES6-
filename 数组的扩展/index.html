@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        console.log('===========剩余运算符=========');
+        /* 剩余运算符如果只有一层，是深拷贝 */
+        // 数组
+        let a = [1,2,3,4]
+        let b = [...a]
+        b[0] = 5
+        console.log(a);  // [1,2,3,4]
+        console.log(b);  // [5,2,3,4]
+        // 对象
+        let aa = {name:'西方'}
+        let bb = {...aa}
+        bb.name = '求败'
+        console.log(aa);  // {name:'西方'}
+        console.log(bb);  // {name:'求败'}
+
+
+        /* 剩余运算符如果有多层，数据是基本类型的，深拷贝 */
+        let c = [1,2,3]
+        let d = [4,5,6]
+        let e = [...c,...d]
+        e[0] = 9
+        console.log(c);
+        console.log(d);
+        console.log(e);
+
+        /* 剩余运算符有多层，数据类型是引用类型，浅拷贝
+           内部的引用类型对象其实复制了指针，所以为浅拷贝
+           基础类型为深拷贝。
+           对象/数组内的变量是引用类型的，为浅拷贝
+         */
+        let a2 = [{name:'东方'},5]
+        let b2 = [...a2]
+        b2[0].name = '不败'
+        b2[1] = 6
+        console.log(a2);  // [{不败},5]
+        console.log(b2);  // [{不败},6]
+
+        console.log('=========Array.from()==========');
+        /* Array.from()可以将类似数组对象或者可遍历对象转为真正的数组
+           并且必须得有length属性才可以转换
+        */
+       // 错误的
+        let ar = { 
+            '0' : 'a',
+            '1' : 'b',
+            '2' : 'c',
+        }
+        console.log(ar);  // {0: 'a', 1: 'b', 2: 'c'}
+        console.log(ar.length); // undefined
+        console.log(Array.from(ar));  // []
+
+        // 正确的
+        let ar2 = { 
+            '0' : 'a',
+            '1' : 'b',
+            '2' : 'c',
+            length : 3
+        }
+        console.log(ar2);  // {0: 'a', 1: 'b', 2: 'c', length: 3}
+        console.log(ar2.length);
+        console.log(Array.from(ar2));  // ['a', 'b', 'c']
+
+        /* 任何具有length属性的都可以通过Array.from()转为数组 */
+        console.log(Array.from({length : 3}));  // [undefined, undefined, undefined]
+
+        /* Array.from第二个参数可以转换后的数组中的每个元素进行处理并返回 */
+        console.log(Array.from([1,2,3],(x)=> x + 1));  // [2,3,4]
+        console.log(Array.from('123',(x)=> x + 1));  // ['11', '21', '31']
+
+        /* Array.from返回的是一个新数组 */
+        let arr3 = [1,2,3]
+        let arr4 = Array.from(arr3,x => x +1)
+        console.log(arr3);  // [1,2,3]
+        console.log(arr4);  // [2,3,4]
+
+        /* 通过第二个参数判断是否存在，如果数值不存在或者是false（假），则返回0 */
+        let arr5 = [1,,2,,3,false,true]
+        console.log(Array.from(arr5, n => n || 0));  // [1, 0, 2, 0, 3, 0, true]
+
+    </script>
+</body>
+</html>

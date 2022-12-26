@@ -148,7 +148,7 @@
        console.log('name:', this.name);  // 中国工艺美术史
     },100)
 
-    /* 这里定时没有使用箭头函数，及时使用call()方法，在函数内部的定时器还是指向window */
+    /* 这里定时没有使用箭头函数，即使使用call()方法，在函数内部的定时器还是指向window */
     setTimeout(function(){
         console.log('name:', this.name); // 艺术概论
     },100)
