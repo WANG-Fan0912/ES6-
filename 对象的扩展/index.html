@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看内容</div>
+    <script>
+        console.log('==========属性名表达式==========');
+        /* 定义对象的属性有两种方式
+           obj.name
+           obj['a'+'b'] = 10
+           第一种是直接使用标识符作为属性名
+           第二种以表达式作为属性名
+        */
+       let obj = {}
+       console.log(obj.name = '孙悟空');  // 孙悟空
+       console.log(obj['a' + 'b'] = 10);  // 10
+       console.log(obj); // {name: '孙悟空', ab: 10}
+
+       /* es5中字面量定义对象只能使用一种方法 */
+       var obj2 = {name:'东方',age:10}
+
+       /* es6允许使用表达式属性名，将表达式放入方括号内即可 */
+       let key = 'address'
+       let obj3 = {
+           name:'不败',
+           [key] : '武汉',
+           ['a'+'ge'] : 100
+       }
+       console.log(obj3);  // {name: '不败', address: '武汉', age: 100}
+       console.log(obj3.address);  // 武汉
+       console.log(obj3[key]);  // 武汉
+
+
+       /* 表达式还可以定义方法名 */
+       let obj4 = {
+            ['f'+'n'](){
+            console.log('hello');
+        },
+        fn2 : function(){console.log('word');}
+       }
+       obj4.fn() // hello
+       obj4.fn2()  // word
+
+       /* 解构与属性名表达式不能同时使用 */
+       // 报错
+       // let fan = 'name'
+       // let tion = { [fan] }
+
+       /* 注意： 属性名表达式如果是对象，会被转换成字符串[object object] */
+       let o = {a : 1}
+       let o2 = {b : 2}
+
+       let obj5 = {
+           [o] : '东方不败',
+           [o2] : '西方求败'
+       }
+       console.log(obj5);   // {[object Object]: '西方求败'}
+       // 由于属性名表达式都被转换为[object Object]，同键名的会被覆盖，所以这里只输出最后一个{[object Object]: '西方求败'}
+       
+    </script>
+</body>
+</html>
