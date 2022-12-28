@@ -111,6 +111,88 @@
    */
   /* 其中for...in会返回继承的属性，其它的几个都会忽略继承的属性 */
   /* 如果枚举属性为false，这四个方法遍历时会忽略为false的属性 */
+
+  console.log('===========解构赋值和剩余运算符==========');
+   /* 解构：
+      可以根据对象的键名直接获取到键值，非常方便
+   */
+  let { a,b,...z } = { a:1, b:2, c:3, d:4, e:5 }
+  console.log(a,b,z);  // 1 2 {c: 3, d: 4, e: 5}
+
+  let info = {
+    id:1,
+    name:'东方不败'
+  }
+  let {id ,name} = info
+  console.log(id,name);  // 1 '东方不败'
+
+//   嵌套解构
+  let info2 = {
+    val:1,
+    user:{
+        id2:100,
+        name2:'东方不败',
+        address:{
+            city:'武汉',
+            district : '世界城广场'
+        }
+    }
+  }
+  let { val,user:{id2,name2,address:{city,district}} } = info2
+  console.log(val,id2,name2,city,district);  // 1 100 '东方不败' '武汉' '世界城广场'
+
+  /* 剩余运算符转换字符串 */
+  console.log({...'world'});  // {0: 'w', 1: 'o', 2: 'r', 3: 'l', 4: 'd'}
+
+  /* 对象剩余运算符相当于是 Object.assign()*/
+  let r = { id : 1, name:'东方', text:'不败'}
+  let res = {...r}
+  let res2 = Object.assign({},r)
+  console.log(res);  // {id: 1, name: '东方', text: '不败'}
+  console.log(res2); // {id: 1, name: '东方', text: '不败'}
+
+  // 剩余运算符拼接，重复的键名会被覆盖
+  let r2 = { a:1 , b:2 , c:3 , d:4}
+  let r3 = {c:6,d:7,e:8,f:9}
+  console.log({...r2,...r3});  // {a: 1, b: 2, c: 6, d: 7, e: 8,f: 9}
+
+  console.log('===========对象遍历方法===========');
+  /* 
+  for...in  循环遍历对象自身和继承的可枚举属性（不含Symbol）
+  Object.keys 返回一个数组，该数组为对象自身的所有可枚举属性（不含继承属性和Symbol属性）
+  Object.getOwnPropertyNames 返回一个数组，包含对象自身的所有（包括不可枚举）属性（不含Symbol属性）
+  Object.getOwnPropertySymbols 返回一个数组，包含对象自身的所有Symbol属性的键名
+  Reflect.ownKeys返回一个数组，包含对象自身的（不含继承的）所有键名，（含 Symbol、字符串、不可枚举）。
+  */
+ let s = Symbol('sym')  // Symbol类型
+ let f = {a:1, b:2, c:3, d:4, e:5, [s]:6}
+
+ for (k in f) {
+    // 键名
+    console.log(k);  // a b c d e
+    // 属性
+    console.log(f[k]); // 1 2 3 4 5
+ }
+
+ // Object.keys返回对象键名数组
+ console.log(Object.keys(f));  // ['a', 'b', 'c', 'd', 'e']
+ Object.keys(f).forEach(el => console.log(el))  // a b c d e
+
+ // Object.getOwnPropertyNames
+ console.log(Object.getOwnPropertyNames(f));  // ['a', 'b', 'c', 'd', 'e']
+
+ // Object.getOwnPropertySymbols
+ console.log(Object.getOwnPropertySymbols(f));  // [Symbol(sym)]
+
+ // Reflect.ownKeys
+ console.log(Reflect.ownKeys(f));  // ['a', 'b', 'c', 'd', 'e', Symbol(sym)]
+
+//  Symbol是不可枚举的
+ let desc2 = Object.getOwnPropertyDescriptor(f,s)
+ console.log(desc2); // {value: 6, writable: true, enumerable: true, configurable: true}
+ // 在这里返回的是enumerable：true，返回的是对象的枚举属性，并不是Symbol
+ // Symbol是不可枚举的，所以keys遍历中是没有Symbol的
+
    
 
        
