@@ -61,6 +61,58 @@
        }
        console.log(obj5);   // {[object Object]: '西方求败'}
        // 由于属性名表达式都被转换为[object Object]，同键名的会被覆盖，所以这里只输出最后一个{[object Object]: '西方求败'}
+
+       console.log('===========name属性===========');
+       /* 函数的name属性返回函数名
+          对象方法也是函数，因此也有name属性
+       */
+      let n = {
+        sayHi(){console.log('hello');}
+      }
+      console.log(n.sayHi.name);   // sayHi
+      
+      /* 如果对象的方法使用了取值函数：getter或存值函数setter，
+         那么的属性在描述对象的get和set身上，需要在方法名前假get和set
+      */
+     let n2 = {
+         get fn(){},
+         set fn(x){}
+     }
+     let desc = Object.getOwnPropertyDescriptor(n2,'fn')
+     console.log(desc.get.name);  // get fn
+     console.log(desc.set.name);  // set fn
+    //  console.log(n2.fn.name);  // Cannot read properties of undefined (reading 'name')
+
+    /* 如果对象的方法是一个Symbol值，name属性返回的是Symbol值的描述 */
+    let key1 = Symbol('desc')
+    let key2 = Symbol()
+    let kobj = {
+        [key1](){},
+        [key2](){}
+    }
+    console.log(kobj[key1].name);  // [desc]
+    console.log(kobj[key2].name);  // ""
+    // key1有描述，返回描述[desc]；key2没有值，返回空
+
+    console.log('===============属性的可枚举行和遍历===========');
+    /* 对象的每个属性都存在一个描述对象，用来控制该属性的行为
+       获取属性描述对象的方法：
+    */
+   let d = { a : 123 }
+   console.log(Object.getOwnPropertyDescriptor(d,'a'));
+   //{value: 123, writable: true, enumerable: true, configurable: true}
+
+   /* 其中，enumerable 为枚举属性，true为可枚举，false为不可枚举 */
+   /* 为忽略enumerable为false属性的操作
+      1、for...in循环：只遍历对象自身的和继承的可枚举的属性。
+      2、Object.keys()：返回对象自身的所有可枚举的属性的键名。
+      3、JSON.stringify()：只串行化对象自身的可枚举的属性。
+      4、Object.assign()： 忽略enumerable为false的属性，只拷贝对象自身的可枚举的属性。
+   */
+  /* 其中for...in会返回继承的属性，其它的几个都会忽略继承的属性 */
+  /* 如果枚举属性为false，这四个方法遍历时会忽略为false的属性 */
+   
+
        
     </script>
 </body>
