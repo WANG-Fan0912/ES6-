@@ -193,9 +193,59 @@
  // 在这里返回的是enumerable：true，返回的是对象的枚举属性，并不是Symbol
  // Symbol是不可枚举的，所以keys遍历中是没有Symbol的
 
-   
+ console.log('=========对象内方法============');
+ /* 对象内方法
+    对象内可以定义函数，调用方式：对象名.方法名()
+    普通函数和箭头函数在对象内都可以定义
+ */
+ let fn = {
+    title:'东方不败',
+    sayHi(){console.log('hello')},
+    getSum(x){return x % 2 == 0 ? true : false},
+    getNum : s = (x) => x + 1
+ }
+ console.log(fn.title); // 东方不败
+ fn.sayHi()  // hello
+ console.log(fn.getSum(3)); // false
+ console.log(fn.getSum(4)); // true
+ console.log(fn.getNum(1)); // 2
 
-       
+
+ Object.keys(fn).forEach(el=> console.log(el))  // title sayHi getSum getNum
+   
+console.log('====对象内方法this=====');
+/* 对象内函数的this指向问题
+   对象内函数:
+   普通函数的this指向的是对象本身，也就是当前函数内的所有属性和方法
+   箭头函数的this指向为window
+*/
+window.val = '西方求败'
+let fn2 = {
+    name : '艺术概论',
+    inThis(){ console.log(this.val)},
+    inThis2(){ 
+        console.log(this.name)
+        console.log(this);
+     },
+     inThis3 : t = () => {
+        console.log(this.val)
+        console.log(this);
+        const t2 = () => {
+            console.log(this);
+        }
+    }
+}
+
+
+function getThis2(){
+   console.log(this.val);
+ }
+ getThis2()  // 西方求败
+ fn2.inThis()  // undefined
+ fn2.inThis2() // 艺术概论  // {name: '艺术概论', inThis: ƒ, inThis2: ƒ}
+ fn2.inThis3() // 西方求败  // Window {window: Window, self: Window, document: document, name: '', location: Location, …}
+
+
     </script>
 </body>
 </html>
