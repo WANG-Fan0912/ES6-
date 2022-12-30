@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+    <script>
+        console.log('============指数运算符===========');
+        /* 指数运算符
+           指数运算符是右结合，多个指数运算符连用时，从右边开始计算
+        */
+       // 2 * 2
+       console.log(2 ** 2); // 4
+
+       // 2 * 2 * 2 * 2
+       console.log(2 ** 4); // 16
+
+
+       // 2 ** (3 ** 2)
+       // 2 ** 9
+       // 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2
+       console.log(2 ** 3 ** 2);  // 512
+
+       /* 指数运算符可以与等号结合，变成赋值运算符 （**=） */
+       let a = 2
+       a **= 4
+       console.log(a);  // 16
+       // 这里相当于是 a = 2 ** 4
+
+    </script>
+</body>
+</html>
