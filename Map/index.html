@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        console.log('=============Map==============');
+        /* Object本质上是键值对的集合（Hash结构），但传统上只能将字符串当做键，这就给Object带来了很大的限制 */
+        let data = {}
+        let s = {
+            name : '东方不败'
+        }
+        data[s] = '西方求败'
+        // 如果键传入非字符串的值，会自动为字符串
+        console.log(data);  // {[object Object]: '西方求败'}
+        console.log(data['[object Object]']);  // 西方求败
+
+        /* 为了解决这个问题，es6提供Map数据结构。
+           它类似对象，也是键值对集合，但键不局限于字符串，各种类型的值都可以当做键。
+           Object结构：字符串 ： 值
+           Map结构：值 ： 值
+        */
+       let data2 = new Map()
+       let s2 = {
+        name : "艺术概论"
+       }
+       data2.set(s2,'中国工艺美术史')
+       console.log(data2.get(s2));  // 中国工艺美术史
+       console.log(data2);  // key: {name: '艺术概论'} m, value : "中国工艺美术史"
+       /* 上面的案例使用Map的set方法，将s2当做data2的键，使用get方法读取这个键 */
+       /* 
+          set() 方法为Map对象添加一个指定键（key）和值（value）的新元素。
+          get() 方法用来获取一个 Map 对象中指定的元素。
+          has() 返回一个bool值，用来表明map 中是否存在指定元素。
+          delete() 删除对应的元素。
+          size 返回Map的成员数。
+          clear() 清除Map所有成员， 没有返回值
+       */
+       console.log(data2.size); // 1
+       console.log(data2.has(s2));  // treu
+       console.log(data2.delete(s2)); // true
+       console.log(data2.has(s2)); // false
+       console.log(data2.clear()); // undefined
+
+
+       /* Map可以接收数组作为参数，数组的成员是单个单个的键值对的数组 */
+       let map = new Map([
+        ['name','东方不败'],
+        ['title','西方求败']
+       ])
+       console.log(map.size);  // 2
+       console.log(map);  // {"name" => "东方不败"}， {"title" => "西方求败"}
+       console.log(map.has('name')); // true
+       console.log(map.get('name')); // 东方不败
+       // 注意：如果有多个相同的键，后面的键值会覆盖前面的键值
+
+       /* 不仅是数组，任何具有Iterator接口、且每个成员都是一个双元素的数组的数据结构，都可以当做Map构造函数的参数，Set和Map也可以用来生成新的Map */
+       let set = new Set([['a',1],['b',2]])
+       let m = new Map(set)
+       console.log(m); // {'a' => 1, 'b' => 2}
+       console.log(m.get('a')); // 1
+
+       let map2 = new Map([['text','世界现代设计史'],['name','王受之']])
+       let m2 = new Map(map2)
+       console.log(m2); // {'text' => '世界现代设计史', 'name' => '王受之'}
+       console.log(m2.get('text')); // 世界现代设计史
+       console.log(m2.get('hello')); // 读取不存在的键会返回undefined
+
+       /* Map只有对同一个对象的引用才视为同一个键 */
+       let map3 = new Map()
+       map3.set(['a',100])
+       console.log(map3.get(['a'])); // undefined
+       // 因为数组不是引用类型，所以生成多个数组，它们的内存地址是不一样的，这里其实就是基础数据类型和引用数据类型的应用，这里的两个['a']看似是一样的，其实它们根本就不是同一个值，所以返回undefined
+       // 相当于：
+       let map4 = new Map()
+       let b = ['b']
+       let b2 = ['b']
+       map4.set(b)
+       console.log(map4.get(b2)); // undefined
+
+       /* Map的键其实是跟内存地址绑定的，内存地址不同，那么键就不同，在这里Map就解决了Map同属性名冲突的问题，当我们使用别人的库时，使用对象当做键名，就不用担心自己的属性与别人的属性相同了 */
+
+       /* 如果Map的键是一个简单数据类型的值：number、string、boolean，只要这两个值严格相等，Map就视为同一个键，例如：0和-0就是同一个键，而布尔值true和字符串true就是不同的键，此外null和undefined也是不同的键。NaN视为同一个键。 */
+       let n = new Map()
+
+       n.set(0,100)
+       console.log(n.get(-0)); // 100
+
+       n.set(5,123)
+       console.log(n.get('5'));  // undefined
+
+       n.set(true,100)
+       console.log(n.get(1)); // undefined
+
+       n.set(NaN,123)
+       console.log(n.get(NaN)); // 123
+
+       n.set(null,100)
+       console.log(n.get(null)); // 100
+       console.log(n.get(undefined)); // undefined
+
+       console.log('======Map遍历方法======');
+       /* 
+        Map提供三个遍历器生成函数和一个遍历方法
+        Map.prototype.keys()：返回键名的遍历器。
+        Map.prototype.values()：返回键值的遍历器。
+        Map.prototype.entries()：返回所有成员的遍历器。
+        Map.prototype.forEach()：遍历 Map 的所有成员。
+       */
+       let m3 = new Map([
+          ['a',100],
+          ['b',200],
+          ['c',300]
+       ])
+
+       /* keys */
+       for(let k of m3.keys()){
+        console.log(k);  // a  b  c
+       }
+
+       /* values */
+       for(let k of m3.values()){
+        console.log(k); // 100  200  300
+       }
+
+       /* entries */
+       for(let k of m3.entries()){
+        console.log(k); // ['a', 100]  ['b', 200]  ['c', 300]
+        console.log(k[0],k[1]); // a 100     b 200    c 300
+       }
+       // 或
+       for(let [k,v] of m3.entries()){
+        console.log(k,v); // a 100     b 200    c 300
+       }
+
+       /* forEach */
+       m3.forEach(el => console.log(el))  // 100  200  300
+       m3.forEach((val,index) => console.log(val,index))  // 100 'a'   200 'b'   300 'c'  
+
+
+
+       console.log('======Map数据结构转换=======');
+       /* Map转数组 */
+       /* 使用扩展运算符将Map结构转换为数组 */
+       let a = new Map([
+        ['a',1],
+        ['b',2],
+        ['c',3]
+       ])
+       console.log([...a.keys()]);  // ['a','b','c']
+       console.log([...a.values()]); // [1,2,3]
+       console.log([...a.entries()]); // ['a', 1]  ['b', 2]  ['c', 3]
+       console.log([...a]); // ['a', 1]  ['b', 2]  ['c', 3]
+
+       /* 转换后的数组即是一个真正的数组，可以使用数组方法 */
+       let back = [...a].filter((val,index) => val[1] == 2 )
+       console.log(back); // ['b',2]
+
+       /* 数组转Map */
+       let a2 = new Map([
+        ['name','东方不败'],
+        [{num : 3},['abc']]
+       ])
+       console.log(a2); // 0: {"name" => "东方不败"}    1: {Object => Array(1)}
+
+       /* Map转对象 */
+       let a3 = new Map()
+       .set('a',100)
+       .set('b',200)
+
+       /* 通过函数传入map */
+       function mapToObj(mapVal){
+        // 在内部创建一个空对象
+        let obj = {}
+        // 遍历map结构，给空对象赋值
+        for([k,v] of mapVal){
+            obj[k] = v
+        }
+        return obj
+       }
+       let mObj = mapToObj(a3)
+       console.log(mObj); // {a: 100, b: 200}
+       // 如果有非字符串键名，会被转换成字符串再创建对象键名
+
+       /* 对象转Map */
+       let obj = {'a':123,'b':456}
+       let mObj2 = new Map(Object.entries(obj))
+       console.log(mObj2);  // {'a' => 123, 'b' => 456}
+
+       /* Map转JSON */
+       // Map转JSON需要区分两种情况
+       // 1、Map键名都是字符串
+       // 2、Map键名有非字符串情况
+
+       /* 1、Map键名都是字符串
+          可以写一个通用函数，用来将Map转为Json
+       */
+       let j = new Map()
+       .set('name','东方')
+       .set('text','不败')
+       // mapToObj为上面创建的Map转对象的函数
+       let shiftStrJson = (mapVal) => JSON.stringify(mapToObj(mapVal))
+       console.log(shiftStrJson(j)); // '{"name":"东方","text":"不败"}'
+
+       /* 2、Map键名部分非字符串 */
+       function shiftMaptoArrayJson(mapVal){
+        return JSON.stringify([...mapVal])
+       }
+       let j2 = new Map()
+       .set('name','东方')
+       .set('text','不败')
+       let shiftStrJson2 = shiftMaptoArrayJson(j2)
+       console.log(shiftStrJson2);  // '[["name","东方"],["text","不败"]]'
+
+       /* JSON转Map */
+       // JSON转Map需要区分两种情况
+       // 1、键名都是字符串
+       // 2、键名有非字符串情况
+
+       /* 1、键名都是字符串 */
+       let strObj = '{"name":"东方","text":"不败"}'
+       let strMap = new Map(Object.entries(JSON.parse(strObj)))
+       console.log(strMap); // {'name' => '东方', 'text' => '不败'}
+
+       /* 2、键名有非字符串情况 */
+       let strObj2 = '[["name","东方"],["text","不败"]]'
+       let strMap2 = new Map(JSON.parse(strObj2))
+       console.log(strMap2); // {'name' => '东方', 'text' => '不败'}
+
+
+
+    </script>
+</body>
+</html>

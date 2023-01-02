@@ -13,11 +13,11 @@
         console.log('===============Symbol===========');
         /* 
           Symbol是es6引入的一个新的原始数据类型，是一个独一无二的值。
-          目前位置，js的数据类型有以下几种：
+          目前为止，js的数据类型有以下几种：
           undefined、null、boolean、string、number、Bigint、Object、Symbol
         */
        /* 
-          Symbol通过Symbol()函数生成。也就是说，对象的属性名现在除了可以使用字符串以外，还可以使用新增的Symbol类型。属性名使用Symbol就说明它是独一无二的，不与其它属性名产生冲突。
+          Symbol通过Symbol()函数生成。也就是说，对象的属性名现在除了可以使用字符串以外，还可以使用新增的Symbol类型。如果属性名使用Symbol，那么它就是独一无二的，不与其它属性名产生冲突。
        */
         let s = Symbol()
         console.log(typeof s);  // symbol
@@ -26,7 +26,7 @@
           注意：Symbol()函数前不能使用new，否则报错。因为生成的Symbol是一个原始类型的值，而不是对象，所以不能使用new来调用。而且，Symbol值不是对象，不能给Symbol添加属性。可以这么理解，Symbol是一种类似于字符串的数据类型。
         */
 
-        /* Symbol接收字符串座位参数，表示对Symbol的描述，添加描述可以区分多个Symbol */
+        /* Symbol接收字符串作为参数，表示对Symbol的描述，添加描述可以用来区分多个Symbol */
         let s2 = Symbol('desc')
         let s3 = Symbol('desc2')
         console.log(s2);  // Symbol(desc)
@@ -36,8 +36,11 @@
         let obj = {
             name : '东方不败'
         }
-        let s4 = Symbol(JSON.stringify(obj)) // Symbol({"name":"东方不败"})
-        console.log(s4);
+        let s4 = Symbol(JSON.stringify(obj)) 
+        console.log(s4);// Symbol({"name":"东方不败"})
+
+        let s5 = Symbol(obj) 
+        console.log(s5);// Symbol([object Object])
 
         /* Symbol传入的参数只是一个描述，实际上Symbol和Symbol并不相等 */
         let sy = Symbol()
@@ -86,7 +89,7 @@
         // 第二个参数:要定义或修改的属性的名称
         // 第三个参数:将被定义或修改的属性描述符
 
-        /* 被Sombol值座位对象属性名时，不能用点运算符，使用点运算符后，其实是给对象添加了一个字符串属性名，并不是Symbol */
+        /* 被Sombol值作为对象属性名时，不能用点运算符，使用点运算符后，其实是给对象添加了一个字符串属性名，并不是Symbol */
         let n2 = Symbol()
         let obj4 = {}
         console.log(obj4.n2 = '中国工艺美术史');  // 中国工艺美术史
@@ -176,7 +179,7 @@
        let b = a.map(el => el + 1)
        let c = a.filter(el => el == 2)
        console.log(a,b,c);  // 1,2,3    2,3,4   2
-       console.log(b instanceof MyArray); // true
+       console.log(b instanceof MyArray); // false
        console.log(b);  // constructor : class MyArray
        /* b和c调用的是数组方法，那么应该数组的实例，但实际上它们也是MyArray的实例 */
        /* Symbol.species可以在创建衍生对象时使用这个属性返回的函数作为构造函数 */
