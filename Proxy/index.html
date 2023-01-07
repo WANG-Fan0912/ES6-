@@ -114,9 +114,11 @@
        */
 
        console.log('==========Proxy实例的方法==========');
+       console.log('=========get()=========');
        /* 此处为上面拦截方法的详细介绍 */
        /* get()
-          用于拦截某个属性的读取操作，可以接受三个参数，依次为目标对象、属性名和proxy实例本身（操作指向的对象），最后一个参数为可选参数。
+          用于拦截某个属性的读取操作，可以接受三个参数：
+          目标对象、属性名、Proxy实例本身（操作指向的对象），最后一个参数为可选参数。
        */
       let person = {
         name : '张三'
@@ -134,15 +136,96 @@
     //   console.log(proxy.age);  // 抛出错误 Uncaught ReferenceError: Prop name "age" does not exist.
     /* 上面代码表示，如果访问目标对象不存在的属性，会抛出错误。如果没有这个拦截函数，访问不存在的属性会返回undefined */
     
-    /* get方法可以继承 */
-    let proto = new Proxy({},{
-        get(target,propertyKey,receiver){
-            console.log('GET'+propertyKey);
-            return target[propertyKey]
+    /* 
+      可以这么理解,Proxy就是一个代理，跟烟酒代理是一样的。
+      比如茅台酒代理，有了这个代理，我们就不能直接去茅台公司拿酒，必须通过代理获得。
+      代理说多少钱就是多少钱，说没有就是没有。
+      Proxy代理的是一个对象，对象被代理后，我们就不能直接访问该对象，只能通过代理访问。
+      如果想要获取对象内的某个值，代理说有就是有，说没有就是没有，代理想给你返回什么值就返回什么值。
+    */
+   // 创建一个对象，用以被Proxy代理
+   let figure = {
+    name:'东方不败'
+   }
+   // 创建代理的方法，当通过代理访问目标对象时，此对象中的对应方法会执行
+   let handlers = {
+    get(target,prop){
+        return '我是代理，我说返回什么就是什么'
+    }
+   }
+   // 创建代理，指定代理对象和代理对象操作对象
+   let proxys = new Proxy(figure,handlers)
+   console.log(proxys.name);  // 我是代理，我说返回什么就是什么
+   console.log(proxys.age);  // 我是代理，我说返回什么就是什么
+
+   /* 为什么要有代理：
+      与以前的Object.defineProperty方法一样，就是不希望用户直接访问某个对象，直接操作对象的某个成员，通过代理，用户的访问首先被代理拦截，拦截后就可以对数据进行处理，比如验证等操作。
+   */
+
+   console.log('=========set()=========');
+   /* 
+     set()方法用来拦截某个属性的赋值操作，接收四个参数，依次为：
+     目标对象、属性名、属性值、Proxy实例本身(可选)
+   */
+  /* 
+     案例：属性值不应该大于200的整数
+     假设Person对象有一个age属性，该属性应该是一个不大于200的整数，那么可以使用Proxy保证age属性值符合要求。
+  */
+ let numHold = {
+    set: function(obj,prop,value){
+        if(prop === 'age'){
+            if(!Number(value)){
+                throw new TypeError('参数不是数字')
+            }
+            if(value > 200){
+                throw new RangeError('参数不能大于200')
+            }
         }
-    });
-    let obj2 = Object.create(proto)
-    obj2.foo  // GETfoo
+
+        // 如果条件满足则直接保存,将值赋值给该属性
+        obj[prop] = value
+    }
+ }
+ let persons = new Proxy({},numHold)
+ persons.age = 100
+ console.log(persons.age);  // 100
+ // persons.age = 300  // 报错，参数不能大于200
+ // persons.age = '东方'  // 报错，参数不是数字
+ /* 上面代码中，设置了一个存值函数set，对对象的age属性进行赋值时，如果不满足age属性的赋值要求，都会抛出一个对应错误，这里就是数据验证的一种实现方法。
+     利用set方法，还可以进行数据绑定，也就是每当对象发生变化时，自动更新DOM。
+ */
+
+
+ /* 有时候，我们会在对象上面设置内部属性，属性名的第一个字符使用下划线开头，表示这些属性不应该被外部使用，结合get和set方法，就可以做到防止这些内部属性被外部读写。 */
+ // 拦截方法
+ let handler2 = {
+    get(target,key){
+        invariant(key,'get')
+        return target[key]
+    },
+    set(target,key,value){
+        invariant(key,'set');
+        target[key] = value
+        return true
+        
+    }
+ }
+ function invariant(key,action){
+    if(key[0] === '_'){
+        throw new Error(`${action}私有属性${key}无效`)
+    }
+ }
+ let target2 = {}  // 当前对象
+ let proxy5 = new Proxy(target,handler2)
+ // console.log(proxy5._prop);  // get私有属性_prop无效
+ // proxy5._name = '东方不败' // set私有属性_name无效
+
+
+
+
+
+
+
     
 
 
