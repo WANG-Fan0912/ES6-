@@ -10,9 +10,28 @@
     <div>打开控制台查看结果</div>
 
 <script>
+    console.log('=========Proxy.revocable()==========');
+    /* Proxy.revocable()方法返回一个可取消的 Proxy 实例。 */
+    // let t8 = {}
+    // let h8 = {}
+    // let {proxy, revoke} = Proxy.revocable(t8, h8);
+
+    // console.log(proxy.foo = 123);  // 123
+    // revoke()  // 取消Proxy实例
+    // console.log(proxy.foo); //  Cannot perform 'get' on a proxy that has been revoked
+    /* 
+      Proxy.revocable()返回一个对象，该对象内有proxy属性和revoke属性。
+      proxy是Proxy实例
+      revoke是一个函数，用来取消Proxy实例
+    */
+   /* 上面代码中revoke执行完后，取消了Proxy实例，当再次访问Proxy实例时会报错 */
+   /* Proxy.revocable()的一个使用场景：目标对象不允许直接访问，必须通过代理访问，一但访问结束，就是收回代理权，不允许再次访问。 */
+
+
+
     console.log('========this问题========');
     /* 
-       虽然Proxy可以代理针对目标对象的访问，但它不是目标对象的透明代理，即不做任何拦截的情况下，也无法保证与目标对象的行为一致。主要原因就是在Proxy代理的情况下，目标对象内部的this关键之会指向Proxy代理。
+       虽然Proxy可以代理针对目标对象的访问，但它不是目标对象的透明代理，即不做任何拦截的情况下，也无法保证与目标对象的行为一致。主要原因就是在Proxy代理的情况下，目标对象内部的this关键字会指向Proxy代理。
     */
    let target = {
     m : function () {
@@ -41,14 +60,14 @@
         return _name.get(this)  // 返回_name的值
     }
   }
-  let jane = new Person('Jane')
-  console.log(jane.name);  // Jane
+  let jane = new Person('东方不败')
+  console.log(jane.name);  // 东方不败
 
   let proxy2 = new Proxy(jane,{})
   console.log(proxy2.name);  // undefined,这里的this指向的是Proxy，所以找不到值
 
   /* 上面代码中，目标对象jane的name属性，实际保存在外部WeakMap对象_name上面，通过this键区分。
-     由于通过proxy2.name访问时，this指向proxy，导致无法取到值，所以返回undefined。
+     由于通过proxy2.name访问时，this指向proxy2，导致无法取到值，所以返回undefined。
   */
 
   /* 此外，有些原生对象的内部属性，只有通过正确的this才能拿到，所以Proxy也无法代理这些原生对象的属性 */
@@ -76,7 +95,7 @@
  // bind()方法主要就是将函数绑定到某个对象，bind()会创建一个函数，函数体内的this对象的值会被绑定到传入bind()第一个参数的值
     
  /* 另外，Proxy拦截函数内部的this，指向的是当前对象 */
- /* 对象内函数都是指向的当前h3对象，其实就是对象内函数的指向问题 */
+ /* 对象内函数都是指向的当前h3对象，其实就是对象内函数的this指向问题 */
  let h3 = {
     get:function(target,key,receiver){
         return 'hello,'+key
@@ -91,7 +110,6 @@
  let p3 = new Proxy({},h3)
  console.log(p3.foo);  // hello,foo
  p3.foo = 1  // true
-
 
 
  console.log('========实例：Web服务的客户端=========');
@@ -112,7 +130,7 @@
         }
     })
  }
- /* 同理，Proxy也可以用来实现数据库的ORM层 */
+//  /* 同理，Proxy也可以用来实现数据库的ORM层 */
 </script>
 </body>
 </html>

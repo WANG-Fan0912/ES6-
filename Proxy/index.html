@@ -36,7 +36,7 @@
           也就是说，给目标对象添加了属性值，但是在访问这一层被拦截了，任何访问都会返回拦截的这一层
        */
 
-       // 注意：要是Proxy生效，就必须对Proxy实例（也就是上面的proxy2对象)进行操作，而不是针对目标对象（第一个参数的空对象）进行操作。
+       // 注意：要使Proxy生效，就必须对Proxy实例（也就是上面的proxy2对象)进行操作，而不是针对目标对象（第一个参数的空对象）进行操作。
 
        // 如果handler（第二个参数）没有设置任何拦截，就等同于直接通向原对象。
         /* 案例：拦截读取属性行为 */
@@ -57,7 +57,9 @@
         }
        })
        let obj = Object.create(proxy4)
-       console.log(obj.time);  // {time: 10}    Prototype:Proxy
+       console.log('====-=-=-=');
+       console.log(obj.time = 20);  // {time: 10}    Prototype:Proxy
+       console.log(obj);
        /* 上面这段代码中，proxy4对象是obj对象的原型，obj对象本身并没有time属性，所以根据原型链，会在proxy4对象上读取该对象，导致被拦截 */
 
        /* 同一个拦截器函数，可以设置拦截多个操作 */
@@ -130,12 +132,12 @@
             if(propKey in target){
                 return target[propKey]
             } else {
-                throw new ReferenceError("Prop name \"" + propKey + "\" does not exist.")
+                throw new ReferenceError("属性名：" + propKey + "不存在")
             }
         }
       })
       console.log(proxy.name);  // 张三
-    //   console.log(proxy.age);  // 抛出错误 Uncaught ReferenceError: Prop name "age" does not exist.
+      // console.log(proxy.age);  // index.html:135 Uncaught ReferenceError: 属性名：age不存在
     /* 上面代码表示，如果访问目标对象不存在的属性，会抛出错误。如果没有这个拦截函数，访问不存在的属性会返回undefined */
     
     /* 
@@ -221,7 +223,7 @@
     }
  }
  let target2 = {}  // 当前对象
- let proxy5 = new Proxy(target,handler2)
+ let proxy5 = new Proxy(target2,handler2)
  // console.log(proxy5._prop);  // get私有属性_prop无效
  // proxy5._name = '东方不败' // set私有属性_name无效
 
@@ -309,16 +311,16 @@ let con = {
         // args是一个参数数组
         // this : construct
         console.log(this === con); // true
-        console.log('回调：'+args.join(','));
+        console.log('回调：'+args.join(','));  // 回调：1,2
         return { value : args[0] * 10 }  // construct返回的必须是一个对象，否则报错
         // return 1  // 返回的不是对象，报错'construct' on proxy: trap returned non-object ('1')
     }
 }
 let p2 = new Proxy(function(){},con)
-console.log((new p2(1,2).value)); 
+console.log((new p2(1,2))); 
 // 结果：
 // 回调：1
-// 10
+// { value : 10}
 /* 注意：由于construct()拦截的是构造函数，所以它的目标对象必须是函数，否则会报错 */
 /* 注意：construct()中的this指向的是con，而不是实例对象 */
 
@@ -362,6 +364,7 @@ console.log(t);  // {}
 /* 上面代码中，defineProperty()方法内部没有任何操作，只返回false,导致新添加的属性总是无效。
    这里返回的false只是用来提示操作失败，本身并不能阻止添加新属性。
 */
+
 console.log('=====剩下的请看index2.html=====');
 
 
