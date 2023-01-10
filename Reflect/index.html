@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看内容</div>
+<script>
+    /* 代理与反射 */
+    /* 
+       Proxy代理，它内置了一些列"陷阱"用于创建一个对象的代理，从而实现基本操作的拦截和自定义（如属性查找、赋值、枚举、函数调用等）
+       Reflect反射，它提供拦截JavaScript操作的方法。这些方法与Proxy的方法相同
+       简单来说，我们可以通过Proxy创建对于原始对象的代理对象，从而在代理对象中使用Reflect达到对于JavaScript原始操作的拦截。
+    */
+
+
+    /* 1、Reflect将Object对象的一些明显属于语言内部的方法放到Reflect对象上。
+       现阶段，某些方法同时在Object和Reflect对象上部署，未来的新方法将只部署在Reflect对象上。
+       也就是说，从Reflect对象上可以拿到语言内部的方法。
+       其实就是Object的内部方法可以从Reflect上获取。
+    */
+
+   /* 
+       2、Reflect修改了某些Object方法的返回结果，让其变得更合理。比如Object.defineProperty(obj, name, desc)在无法定义属性时，会抛出错误，而Reflect.defineProperty(obj, name, desc)则会返回false
+   */
+  // 老写法
+//   try{
+//     Object.defineProperty(target,property,attributes);
+//     // success
+//   } catch (e){
+//     // failure...
+//   }
+
+  // 新写法
+//   if(Reflect.defineProperty(target,property,attributes)){
+//     // success
+//   } else {
+//     // failure...
+//   }
+
+    /* 3、让Object操作都变成函数行为。
+    某些Object操作时命令式，
+    比如 name in object 和 delete obj[name],
+    而Reflect.has(obj,name)和Reflect.deleteProperty(obj,name)让他们变成了函数行为 */
+    // 老写法
+    console.log('assign' in Object); // true
+    // 新写法
+    console.log(Reflect.has(Object,'assign')) // true
+
+    /* 4、Reflect对象的方法与Proxy对象的方法一一对应，只要是Proxy对象的方法，就能在Reflect对象上找到对应的方法。这就让Proxy对象可以方便的调用对应的Reflect方法，完成默认行为，作为修改行为的基础。也就是说，不管Proxy怎么修改默认行为，你总可以在Reflect上获取默认行为 */
+    let setHold = {
+        set : function(target,name,value,receiver){
+            let success = Reflect.set(target,name,value,receiver);
+            console.log('Reflect:',success);  // Reflect: true
+            if(success){
+                console.log('property ' + name + ' on ' + JSON.stringify(target) + ' set to ' + value);
+            }
+            return success
+        }
+    }
+    let proxy = new Proxy({},setHold)
+    proxy.age = 100  // property age on {"age":100} set to 100
+    console.log(proxy);  // Proxy {age: 100}
+    /* 上面代码中,Proxy方法拦截target对象的属性赋值行为。它采用Reflect.set方法将值赋值给对象的属性，确保完成原有的行为，然后再部署额外对的功能。 */
+
+    // 下面是另一个例子
+    let loggedObj = new Proxy({},{
+        get(target,name){
+            console.log('get',target,name);
+            return Reflcet.get(target,name)
+        },
+        deleteProperty(target,name){
+            console.log('delete',name);
+            return Reflect.deleteProperty(target,name)
+        },
+        has(target,name){
+            console.log('has' + name);
+            return Reflect.has(target,name)
+        }
+    })
+    /* 上面代码中，每一个Proxy对象的拦截操作（get、delete、has)，内部都调用对应的Reflect方法，保证原生行为能够正常执行。添加的工作就是将每一个操作输出一行日志。
+       有了Reflect对象以后，很多操作会更易读。
+    */
+   // 老写法
+   let m = Function.prototype.apply.call(Math.floor,undefined,[2.55])  // 2
+   console.log(m);
+
+   // 新写法
+   let m2 = Reflect.apply(Math.floor,undefined,[2.55]) // 2
+   console.log(m2);
+
+
+   console.log('=============静态方法================');
+   /* Reflect对象一共有13个静态方法。
+    1、Reflect.apply(target, thisArg, args)
+    
+    2、Reflect.construct(target, args)
+    
+    3、Reflect.get(target, name, receiver)
+    
+    4、Reflect.set(target, name, value, receiver)
+    
+    5、Reflect.defineProperty(target, name, desc)
+    
+    6、Reflect.deleteProperty(target, name)
+    
+    7、Reflect.has(target, name)
+    
+    8、Reflect.ownKeys(target)
+    
+    9、Reflect.isExtensible(target)
+    
+    10、Reflect.preventExtensions(target)
+    
+    11、Reflect.getOwnPropertyDescriptor(target, name)
+    
+    12、Reflect.getPrototypeOf(target)
+    
+    13、Reflect.setPrototypeOf(target, prototype)
+
+    上面这些方法的作用，大部分与Object对象的同名方法的作用都是相同的，而且它与Proxy对象的方法是一一对应的。
+   */
+
+   console.log('============实例：使用Proxy实现观察者模式==========');
+
+    
+
+</script>
+</body>
+</html>
