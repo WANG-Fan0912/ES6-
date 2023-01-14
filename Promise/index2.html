@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+<script>
+      /* resolve函数的参数除了可以携带正常值以外，还可以携带Promise实例 */
+      let pro = new Promise(function(resolve,reject){
+        let i = 10
+        if(i < 50){
+           resolve(i)
+        } else {
+            reject(error)
+        }
+      })
+
+      let pro2 = new Promise(function(resolve,reject){
+            resolve(pro)  // 参数为上一个Promise实例
+      })
+
+      
+      pro2.then(el=>{
+        console.log(el);  // 10
+      })
+      .catch(err=>{
+        console.log(err);
+      })
+
+      /* 
+         执行顺序：
+         先执行pro，如果pro的状态时pending时，pro2则会等待执行，当pro的状态变成的resolved或rejected时，pro2则会立马执行，由于pro决定pro2的状态，所以后面的.then变成了针对pro
+      */
+
+
+
+    console.log('=========Primse的嵌套执行========');
+    let p = new Promise((resolve,reject)=>{
+        let i = 10
+        if(i > 5){
+            resolve(i)
+        } else {
+            reject('pro错误')
+        }
+    })
+    let p2 = new Promise((resolve,reject)=>{
+        p.then(el=>{
+            console.log(el * 2);  // 20
+            if(el > 6){
+               resolve(el)
+               console.log('我是p1的.then回调');  // 我是p1的.then回调
+            } else {
+                reject('pro2错误')
+            }
+        })
+    })
+   
+    let p3 = new Promise((resolve,reject)=>{
+        p2.then(el=>{
+            if(el > 50){
+                resolve(el)
+            } else {
+                reject('pro3错误')
+            }
+        })
+    })
+
+    /* 
+       多个Promise的执行顺序：
+       新建Promise后会立马执行，先执行Promise内的任务，执行完成后再执行.then
+       如果Promise内有其它Promise的.then任务执行（这里简称p2)，会先将p2的.then任务执行完毕，再执行自身的.then任务
+       多个Promise并行，会先按顺序执行Promise的任务，再分别按照顺序分别执行他们的.then任务
+    */
+
+    /* 需要注意的是：上面p2的Promse中，正常来说，resolve或reject执行完后，Promise的使命应该完成，但此处因为执行顺序的问题，并没有先执行resolve，而是执行了console的任务，因该写成return resolve(value)的形式，让Promise更正常一些，否则会出现不必要的意外。 */
+
+</script>
+</body>
+</html>

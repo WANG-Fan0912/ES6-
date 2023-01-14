@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+<script>
+    console.log('=======Promise基本用法========');
+    /* Promise是一个构造函数，用来生成Promise实例
+       Promise构造函数接受一个函数作为参数，该函数有两个参数，分别是resolve,reject
+       resolve ： 成功时的回调
+       reject ： 失败时的回调
+
+       Promise分别有三个状态:pending(进行中)、fulfilled(已成功)、rejected(已失败)
+       Promise一旦新建后就会立马执行，无法中途取消，Promise返回的状态只有两种：
+       1、从pending到fulfilled
+       2、从pending到rejected
+       一旦状态改变，就不会再发生变化。
+
+       Promise内部结果一旦返回：resolve && reject 其中任何一种，即可产生回调。
+       resolve的回调在.then中获取（成功的回调）
+       reject的回调在.catch中获取（失败，捕获错误）
+    */
+    let promise = new Promise(function(resolve,reject){
+        // sth...
+        let i = 5;
+        if( i > 1){
+            resolve(i) // 成功
+        } else { 
+            reject(error) // 失败
+        }
+    })
+    
+    promise.then(el=>{
+        // el即为resolve的参数
+        console.log(el);  // 5
+    })
+    .catch(err=>{
+        console.log(err);  // 返回异常信息
+    })
+
+
+    /* Promise的执行顺序
+       Promise创建后会立马执行，.then是一个异步回调，将在所有的的同步任务执行完后执行.then
+       也就是说：
+       Promise会和同步任务一样进入同步队列执行，.then或catch为异步任务，当所有同步任务执行完后才会执行.then
+    */
+   let pro = new Promise(function(resolve,reject){
+    console.log('Promise新建');
+    resolve()
+   })
+   pro.then(el=>{
+    console.log('.then回调');
+   })
+   console.log('同步任务');
+   /* 
+      上述代码的执行结果：
+      1、Promeise新建
+      2、同步任务
+      3、.then回调
+   */
+</script>
+</body>
+</html>

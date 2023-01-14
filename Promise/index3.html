@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+<script>
+   console.log('==============Promise.prototype.then()=============');
+   /* 
+      this方法是定义在原型对象Promise.prototype上的
+      它可以为Promise实例添加状态改变时的回调函数
+      this有两个参数（可选）：
+      resolved：状态的回调函数
+      rejected：状态的回调函数
+
+      then返回的时一个新的Promise实例，因此可以可以采用链式写法，即.then后还可以再接.then
+   */
+    let p = new Promise((resolve,reject)=>{
+        let i = 5;
+        if(i > 4){
+            resolve(i)
+        } 
+    })
+
+    p.then(el=>{
+        console.log('then1：'+ el);
+        if(el > 3){
+           return el
+        }
+    }).then(el=>{
+        console.log('then2：'+ el * 2);
+    })
+    /* 
+       输出结果：
+       then1：5
+       then2：10
+    */
+
+    /* 
+       上面代码使用then方法，第一个.then回调函数执行完后，会将返回结果传入第二个回调函数，也就是说，第二个.then的参数是第一个.then返回的结果
+    */
+
+
+
+</script>
+</body>
+</html>

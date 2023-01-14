@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+<script>
+    console.log('============Promise.ptototype.catch()============');
+    /* 
+       Promise.prototype.catch()方法是.then(null,rejection)的别名，也就是说，catch其实是用来指定发生错误时的回调函数。
+    */
+   let p = new Promise((resolve,reject)=>{
+        reject('错误信息')
+   })
+   p.then(el=>{
+    // sth...
+   }).catch(err=>{
+    console.log(err);  // 错误信息
+   })
+   /* 上述代码中，p方法返回Promise对象，该对象返回的是reject
+      .then方法调用回调函数，then有两个参数，一个resolved和rejected，如果Promise返回的是reject，那么.then的状态就会变成rejected，rejected会调用catch()方法指定的回调函数，处理该错误，catch的参数就是reject抛出的错误信息。
+    */
+
+    /* 如果then运行中抛出错误，也会被catch()捕获。 */
+   let p2 = new Promise((resolve,reject)=>{
+      resolve(100)
+   })
+   p2.then(el=>{
+      throw new Error('then抛错')
+   }).catch(err=>{
+    console.log(err);  // Error: then抛错
+   })
+   
+</script>
+</body>
+</html>
