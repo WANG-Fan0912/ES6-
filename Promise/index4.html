@@ -67,9 +67,19 @@
    })
 
    // 以上三种效果是一样的，前两种通过Error抛出异常，后一种直接抛出异常
+   // catch返回的也是一个Promise对象，后面还可以接着.then
 
 
-   /* 如果Promise的状态变成resolved，那么在抛出错误是无效的 */
+   /* 如果Promise的状态变成resolved，那么在抛出错误是无效的，因为Promise的状态一旦发生改变，就会永久保持该状态。 */
+
+
+   /* Promise内部错误不会影响到到异步队列中的Promise外部代码，同步代码还是会造成阻塞 */
+   let p3 = new Promise((resolve,reject)=>{
+      resolve(str)  // ReferenceError: str is not defined
+   })
+   p3.then(el=>{console.log(el)})
+   setTimeout(()=>{console.log('Promise外部代码')},1000)  // Promise外部代码
+   console.log('同步代码');  // 未打印
    
 </script>
 </body>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        console.log('===========finally()=========');
+        /* finally()方法不管Promise最后的状态如何，都会执行 */
+        let p = new Promise((resolve,reject)=>{
+            resolve('东方不败')
+        })
+        p.then(el=>{
+            console.log(el);  // 东方不败
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+        .finally(()=>
+            console.log('finally执行')  // finally执行
+        )
+        // 上述代码中，不管Promise最后的状态怎么样，finally都会执行，即使没有then()和catch()，finally也会执行
+        /* 需要注意的是，finally不接受任何参数，但是finally的执行顺序跟内部是否是一个函数有关，如果finally内部是一个函数，那么finally会在Promise最后执行，如果finally内部没有任何函数，直接输出，那么finally会在Promise最前面执行。
+           finally的执行跟Promise的状态无关。
+        */
+    </script>
+</body>
+</html>
