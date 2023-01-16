@@ -35,6 +35,41 @@
    }).catch(err=>{
     console.log(err);  // Error: then抛错
    })
+
+
+   /* catch捕捉错误的方式 */
+   // 方式一
+   let promise = new Promise(function(resolve,reject){
+      try {
+         throw new Error('方式一错误')
+      } catch(e){
+         reject(e)
+      }
+   })
+   promise.catch(err=>{
+   console.log(err);  //  方式一错误
+   })
+
+   // 方式二
+   let promise2 = new Promise(function(resolve,reject){
+      reject(new Error('方式二错误'))
+   })
+   promise2.catch(err=>{
+      console.log(err);  //  方式二错误
+   })
+
+   // 方式三
+   let promise3 = new Promise((resolve,reject)=>{
+      reject('方式三错误')
+   })
+   promise3.catch(err=>{
+      console.log(err);  // 方式三错误
+   })
+
+   // 以上三种效果是一样的，前两种通过Error抛出异常，后一种直接抛出异常
+
+
+   /* 如果Promise的状态变成resolved，那么在抛出错误是无效的 */
    
 </script>
 </body>
