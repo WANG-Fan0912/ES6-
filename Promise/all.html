@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        console.log('============Promise.all()==========');
+        /* Promise.all()方法用于将多个Promise实例包装成一个新的Promise实例 */
+        // 语法：let p = Promise.all([p1,p2,p3])
+
+        /* 案例一 */
+        let p = new Promise((resolve,reject)=>{
+            resolve(10)
+        })
+        p.then(el=>{
+            console.log(el);
+        })
+        
+        let p2 = new Promise((resolve,reject)=>{
+            // resolve(20)
+            reject(20)
+        })
+        p2.then(el=>{
+            console.log(el);
+        })
+        .catch(err=>{console.log('p2:',err);})
+
+        // p\p2都返回resolve则触发该函数
+        Promise.all([p,p2])
+        .then(el=>{
+            console.log(el);
+        })
+        .catch(err=>{console.log('all:',err);})  // all:20
+        /*
+           当Promise.all的两个promise参数状态都变成fulfilled时，才会触发Promise.all的方法，如果其中以一个参数被rejected，那么Promise.all()也会变成rejected的状态，会被catch捕捉。
+           如果p2没有chach方法，则会调用Promise.all()的catch
+        */
+
+
+    </script>
+</body>
+</html>

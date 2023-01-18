@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        console.log('===========race()=========');
+        /*
+           Promise.race()方法可以将多个Promise实例包装成一个新的Promise实例。
+           语法： let p = Promise.race([p1,p2,p3])
+        */
+
+        let p = new Promise((resolve,reject)=>{
+            setTimeout(()=>{
+               resolve('p1状态')
+            },2000)
+        })
+        let p2 = new Promise((resolve,reject)=>{
+            setTimeout(()=>{
+               resolve('p2状态')
+            },1000)
+        })
+        let p3 = new Promise((resolve,reject)=>{
+            setTimeout(()=>{
+               resolve('p3状态')
+            },3000)
+        })
+
+        let promise = Promise.race([p,p2,p3])
+        promise
+        .then(el=>{
+            console.log(el);  // p2状态
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+        /*
+           race有竞争，角逐的意思，该方法其实就是参数中，哪一个Promise的状态先发生改变，就调用先发生改变的promise，这个el就是最先发生改变的promise的返回值。
+        */
+    </script>
+</body>
+</html>
