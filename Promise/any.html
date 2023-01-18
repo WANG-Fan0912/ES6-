@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        console.log('========Promise.any()=========');
+        /*
+           Promise.any()方法接受一组Promise实例作为参数，包装成一个新的Promise实例返回。
+        */
+        let p = new Promise((resolve,reject)=>{
+            resolve('p1状态')
+        })
+        
+        let p2 = new Promise((resolve,reject)=>{
+                reject('p2状态')
+        })
+
+        Promise.any([p,p2])
+        .then(el=>{
+            console.log('then:',el);  // then: p1状态
+        })
+        .catch(err=>{
+            console.log('catch:',err);
+        })
+
+        /* 
+        只要有一个参数的状态变成fulfilled，Promise.any就会变成fulfilled状态
+        如果所有的参数实例都变成rejected状态，包装实例才会变成rejected状态
+        */
+    </script>
+</body>
+</html>

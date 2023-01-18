@@ -31,8 +31,13 @@
                resolve('p3状态')
             },3000)
         })
+        let p4 = new Promise((resolve,reject)=>{
+            setTimeout(()=>{
+               reject('reject:p4状态')
+            },4000)
+        })
 
-        let promise = Promise.race([p,p2,p3])
+        let promise = Promise.race([p,p2,p3,p4])
         promise
         .then(el=>{
             console.log(el);  // p2状态
