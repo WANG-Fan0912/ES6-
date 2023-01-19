@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        console.log('=======Promise.try()=========');
+        /*
+           实际开发中，会遇到这么一种情况，不管函数是同步还是异步的，都想用Promise来处理它，因为这样就可以用用then指定下一步流程，catch处理抛出的错误，更便于管理流程。
+           async可以做到同步代码风格执行异步操作。
+        */
+       // 为什么这么做？
+       /*
+          Promise抛出的错误，catch可以捕捉到，但仅限于当前Promise的异常错误，也就是异步的。如果同步错误抛出，那么.chtch是捕捉不到的，需要在外层再嵌套一层try...catch，这样写起来非常麻烦
+       */
+      try {
+        let p = new Promise((resolve,reject)=>{
+        reject('异步错误')
+        })
+        p.catch(err=> void console.log(err) )  // 异步错误
+        throw Error('同步错误')
+      } catch (e) {
+        console.log(e);  // 同步错误
+      }
+      // 这样catch两次，可以处理同步和异步的抛错问题
+
+      /*
+         如果使用Promise.catch()就可以捕获所有的同步和异步错误
+      */
+    //  Promise.try(()=>{
+    //     let p2 = new Promise((resolve,reject)=>{
+    //         reject('异步错误2')
+    //     })
+    //     throw Error('同步错误2')
+    //  })
+    //  .then(el=>{
+    //     console.log('then:',el);
+    //  })
+    //  .catch(err=>{
+    //     console.log('catch:',err);
+    //  })
+    /*
+       此处的Promise.tyr就相当于try代码块，Promise.catch就相当于catch代码块
+    */
+
+
+
+    </script>
+</body>
+</html>
