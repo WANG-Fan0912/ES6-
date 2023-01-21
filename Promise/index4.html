@@ -10,7 +10,7 @@
     <div>打开控制台查看结果</div>
 
 <script>
-    console.log('============Promise.ptototype.catch()============');
+    console.log('============Promise.prototype.catch()============');
     /* 
        Promise.prototype.catch()方法是.then(null,rejection)的别名，也就是说，catch其实是用来指定发生错误时的回调函数。
     */
@@ -78,7 +78,7 @@
       resolve(str)  // ReferenceError: str is not defined
    })
    p3.then(el=>{console.log(el)})
-   setTimeout(()=>{console.log('Promise外部代码')},1000)  // Promise外部代码
+   setTimeout(()=>{console.log('Promise外部代码')},0)  // Promise外部代码
    console.log('同步代码');  // 未打印
    
 </script>

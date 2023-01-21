@@ -34,7 +34,7 @@
 
       /* 
          执行顺序：
-         先执行pro，如果pro的状态时pending时，pro2则会等待执行，当pro的状态变成的resolved或rejected时，pro2则会立马执行，由于pro决定pro2的状态，所以后面的.then变成了针对pro
+         先执行pro，如果pro的状态是pending时，pro2则会等待执行，当pro的状态变成的resolved或rejected时，pro2则会立马执行，由于pro决定pro2的状态，所以后面的.then变成了针对pro
       */
 
 

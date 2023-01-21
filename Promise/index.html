@@ -38,7 +38,7 @@
     
     promise.then(el=>{
         // el即为resolve的参数
-        console.log(el);  // 5
+        // console.log(el);  // 5
     })
     .catch(err=>{
         console.log(err);  // 返回异常信息
@@ -48,7 +48,7 @@
     /* Promise的执行顺序
        Promise创建后会立马执行，.then是一个异步回调，将在所有的的同步任务执行完后执行.then
        也就是说：
-       Promise会和同步任务一样进入同步队列执行，.then或catch为异步任务，当所有同步任务执行完后才会执行.then
+       Promise在新建的时候会立即执，then或catch为异步任务，当所有同步任务执行完后才会执行.then
     */
    let pro = new Promise(function(resolve,reject){
     console.log('Promise新建');

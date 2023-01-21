@@ -12,13 +12,13 @@
 <script>
    console.log('==============Promise.prototype.then()=============');
    /* 
-      this方法是定义在原型对象Promise.prototype上的
+      then方法是定义在原型对象Promise.prototype上的
       它可以为Promise实例添加状态改变时的回调函数
-      this有两个参数（可选）：
+      then有两个参数（可选）：
       resolved：状态的回调函数
       rejected：状态的回调函数
 
-      then返回的时一个新的Promise实例，因此可以可以采用链式写法，即.then后还可以再接.then
+      then返回的是一个新的Promise实例，因此可以可以采用链式写法，即.then后还可以再接.then
    */
     let p = new Promise((resolve,reject)=>{
         let i = 5;

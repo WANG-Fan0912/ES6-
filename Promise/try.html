@@ -12,7 +12,7 @@
     <script>
         console.log('=======Promise.try()=========');
         /*
-           实际开发中，会遇到这么一种情况，不管函数是同步还是异步的，都想用Promise来处理它，因为这样就可以用用then指定下一步流程，catch处理抛出的错误，更便于管理流程。
+           实际开发中，会遇到这么一种情况，不管函数是同步还是异步的，都想用Promise来处理它，因为这样就可以用then指定下一步流程，catch处理抛出的错误，更便于管理流程。
            async可以做到同步代码风格执行异步操作。
         */
        // 为什么这么做？
@@ -33,18 +33,18 @@
       /*
          如果使用Promise.catch()就可以捕获所有的同步和异步错误
       */
-    //  Promise.try(()=>{
-    //     let p2 = new Promise((resolve,reject)=>{
-    //         reject('异步错误2')
-    //     })
-    //     throw Error('同步错误2')
-    //  })
-    //  .then(el=>{
-    //     console.log('then:',el);
-    //  })
-    //  .catch(err=>{
-    //     console.log('catch:',err);
-    //  })
+   //   Promise.try(()=>{
+   //      let p2 = new Promise((resolve,reject)=>{
+   //          reject('异步错误2')
+   //      })
+   //      throw Error('同步错误2')
+   //   })
+   //   .then(el=>{
+   //      console.log('then:',el);
+   //   })
+   //   .catch(err=>{
+   //      console.log('catch:',err);
+   //   })
     /*
        此处的Promise.tyr就相当于try代码块，Promise.catch就相当于catch代码块
     */
