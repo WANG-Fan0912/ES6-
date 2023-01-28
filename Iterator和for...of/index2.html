@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        /* Iterator接口的目的，就是为所有数据解构，提供一种统一的访问机制，即for...of循环
+           当使用for...of循环遍历某种数据结构时，该循环会自动去寻找Iterator接口。
+        */
+
+        /* 
+           对象Object之所以没有默认部署Iterator接口，是因为对象的哪个属性先遍历，哪个属性后遍历是不确定的，需要开发者手动指定。本质上，遍历器是一种线性处理，对于任何非线性的数据结构，部署遍历器接口，就等于部署一种线性转换。不过，严格地说，对象部署遍历器接口并不是很必要，因为这时对象实际被当作Map结构使用。
+        */
+
+        /* 一个对象如果要具备可被for...of循环调用的Iterator接口，就必须在Symbol.iterator的属性上部署遍历器生成方法（原型链上存在也可） */
+
+        console.log('===========调用Iterator接口的场合===========');
+        /* 
+            1、解构赋值
+            对数组和Set解构进行解构赋值时，会默认调用Symbol.iterator方法。
+
+            2、扩展运算符
+            扩展运算符（...)也会默认调用Iterator接口。
+
+            3、yield*
+            yield*后面跟的是一个可遍历的结构，它会调用该结构的遍历器接口。
+
+            4、其它场合
+            由于数组的遍历会调用遍历器接口，所以任何接受数组作为参数的场合，其实都调用了遍历器接口。
+            for...of
+            Array.from()
+            Map()
+            Set()
+            WeakMap()
+            WeakSet()
+            Promise.all()
+            Promise.race()
+        */
+
+        console.log('===========字符串的Iterator接口============');
+        /* 字符串是一个类似数组的对象，也原生具有Iterator接口。 */
+        let some = 'hi'
+        console.log(typeof some[Symbol.iterator]);  // function
+
+        let iterator = some[Symbol.iterator]()
+        console.log(iterator.next());  // {value: 'h', done: false}
+        console.log(iterator.next());  // {value: 'i', done: false}
+        console.log(iterator.next());  // {value: undefined, done: true}
+        // Symbol.iterator方法返回一个遍历器对象， 在这个遍历器上可以调用next方法，实现对于字符串的遍历。
+
+        /* 可以覆盖原生的Symbol.iterator方法，达到修改遍历器行为的目的 */
+        let str = new String('hi')
+        console.log(...str);  // h i
+        str[Symbol.iterator] = function(){
+            return {
+                next : function(){
+                   if(this._one){
+                    this._one = false;
+                    return { value : 'bye' , done:false}
+                   } else {
+                    return { done : true}
+                   }
+                },
+                _one : true
+            }
+        }
+        console.log(...str);  // bye
+        console.log(str);  // String {'hi', Symbol(Symbol.iterator): ƒ}
+        // 上述代码中，字符串str的Symbol.iterator方法被修改了，所以扩展运算符... 返回的值变成了bye，而字符串本身还是hi
+
+        
+
+
+    </script>
+</body>
+</html>
