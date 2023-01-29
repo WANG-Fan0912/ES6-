@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        /* 
+           for...of循环，为遍历所有数据结构的统一方法。
+           一个数据解构只要部署了Symbol.iterator属性，就被视为具有iterator接口，就可以用for...of循环遍历它的成员。也就是说，for...of新欢内部调用的是数据解构的Symbol.iterator方法。
+         */
+
+         /* 
+           for...of新欢可以使用的范围：
+           数组
+           Set结构
+           Map结构
+           某些类似数组的对象：arguments、DOM NodeList对象
+           Generator对象
+           字符串
+         */
+         let arr = [1,2,3]
+         for(let i of arr){console.log(i);}  // 1 2 3
+
+         let str = 'hello'
+         for(let i of str){console.log(i);}  // h e l l o
+
+         let s = new Map()
+         s.set('a',1)
+         s.set('b',2)
+         s.set('c',3)
+         for(let [name,value] of s){
+            console.log(name+':'+value)  
+            // a:1
+            // b:2
+            // c:3
+        }
+        // 多个变量返回单个对象
+
+        for(let val of s){
+            console.log(val)  
+            // ['a', 1]
+            // ['b', 2]
+            // ['c', 3]
+        }
+        // 单个变量返回数组
+
+        
+        console.log('==============计算生成的数据结构===========');
+        /* 有些数据结构是在现有数据结构上计算生成的 */
+        /* entries()返回一个遍历器对象，用来遍历[键名，键值]自称的数组
+           对于数组，键名就是索引值
+           Set，键名与键值相同
+           Map结构的Iterator接口默认调用entries方法
+        */
+       /* 这三个方法调用后生成的遍历器对象，遍历的都是计算生成的数据结构 */
+       let arr2 = ['a','b','c','d']
+       for(let i of arr2.entries()){
+        console.log(i);
+        //  [0, 'a']
+        //  [1, 'b']
+        //  [2, 'c']
+        //  [3, 'd']
+       }
+
+
+       console.log('=========对象遍历========');
+       // 对象遍历通常使用for...in
+       let obj = {
+        name : 'a',
+        name2 : 'b',
+        name3 : 'c'
+       }
+       for(let i in obj){console.log(i);} // name name2 name3
+
+       /* 普通对象for...of结构不能直接使用，必须部署了Iterator接口后才可使用 */
+    //    for(let i of obj){console.log(i);} // 报错 obj is not iterable
+
+    // 解决方法：同构Object.keys将对象的键名生成一个数组，然后遍历
+    for(let k of Object.keys(obj)){
+        console.log(k + ':' + obj[k]);
+        // name:a
+        // name2:b
+        // name3:c
+    }
+
+    console.log('=======与其它遍历方法的比较=====');
+    let arr3 = [1,2,3,4,5]
+    // forEach无法使用return或break跳出循环
+    arr3.forEach(el=>{
+        console.log(el);
+        if(el >= 3 ) return
+    })
+
+
+    console.log('for...of');
+    // for...of可以使用break跳出循环
+    for(let i of arr3){
+        console.log(i);
+        if(i >= 3 ) break
+    }
+    </script>
+</body>
+</html>
