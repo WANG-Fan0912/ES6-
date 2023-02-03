@@ -91,10 +91,49 @@
         fn();  // 没有任何执行
         fn().next()  // 执行了11  执行了22
 
-        /* yield只能再Generator函数内，用在其它地方会报错 */
+        /* yield只能再在Generator函数内，用在其它地方会报错 */
         function fn2(){
             // yield 100;  // 报错 Unexpected number 
         }
+
+      /* yeild表达式如果用在另一个表达式中，必须放在圆括号里 */
+      function* demo(){
+         // console.log('hello' + yield); // Uncaught SyntaxError: Unexpected identifier 'yield'
+         console.log("hello" + (yield));  // 不报错
+      }
+      /* 如果yield表达式用作函数参数或放在赋值表达式右边，可以不加括号 */
+      function* deom2(){
+         foo(yield 'a' , yield 'b');
+         let s = yield;
+      }
+
+      console.log('=========next方法的参数==========');
+      /* yield表达式本身没有返回值，或者说总是返回undefined。next方法可以带一个参数，该参数就会被当作上一个yield表达式返回的值。
+         我们可以利用这个特性，来让Generator函数分阶段执行不同的行为。
+      */
+   //   案例一
+   function* f(){
+      for(let i = 0;true;i++){
+         let reset = yield i;
+         if(reset){ i = -1 }
+      }
+   }
+   let g= f()
+   console.log(g.next()); // {value: 0, done: false}
+   console.log(g.next()); // {value: 1, done: false}
+   console.log(g.next()); // {value: 2, done: false}
+   console.log(g.next(true)); // {value: 0, done: false}
+   console.log(g.next()); // {value: 1, done: false}
+   /* 案例一中，定义了一个无限循环的for
+   next第一遍，运行到yield这里停止，这里yield后面的i结果为0
+   next第二遍，运行到yield这里停止这里yield后面的i结果为2
+   前两次next，yield没有参数，那么yield返回的是undefined，直到第三次next，传入一个true
+   next第三遍，reset等于true，进入判断更改i的值为-1,遍历的i从-1开始
+    */
+
+    /* next可以让Generator函数从暂停状态到恢复运行，Generator的上下文状态时不变的，但是我们可以通过next方法的参数，让Generator函数开始运行时，往内部注入值，让Generator函数在运行的不同阶段，通过该参数调整函数行为。 */
+    
+   
 
 
 
