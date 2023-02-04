@@ -52,7 +52,7 @@
         /* 
            Generator函数返回遍历器对象，只有调用next方法才会遍历下一个内部状态。
            
-           1、其实，yield表达式就是一个暂停表示，当next执行后，遇到yield表达式会暂停执行后面的操作，并紧跟在yield后面的表达式，并返回当前遍历对象的value属性值。
+           1、其实，yield表达式就是一个暂停表示，当next执行后，遇到yield表达式会暂停执行后面的操作，紧跟在yield后面的表达式并返回当前遍历对象的value属性值。也就是说，yield这一行后面的表达式结果会作为属性对象被返回。
 
            2、下一次调用next方法时，再继续往下执行，直到遇到下一个yield表达式。
 
@@ -132,9 +132,242 @@
     */
 
     /* next可以让Generator函数从暂停状态到恢复运行，Generator的上下文状态时不变的，但是我们可以通过next方法的参数，让Generator函数开始运行时，往内部注入值，让Generator函数在运行的不同阶段，通过该参数调整函数行为。 */
-    
-   
+    console.log('案例二');
+    function* f2(x){
+      let y = 2 * (yield (x + 1));
+      let z = yield (y / 3);
+      return (x + y + z)
+    }
+    let a = f2(2)
+    console.log(a.next());  // {value: 3, done: false}
+    console.log(a.next());  // {value: NaN, done: false}
+    console.log(a.next());  // {value: NaN, done: true}
+    /* 第一次进来，f2参数x=2,第一个yield中，由于x+1,所以x=3,遇到yield停止
+       第二次进来，由于next会从上一个yield停止的地方执行，所以这里执行的是y这一行，next没有参数，所以yield返回undefined，2*undefined = NaN
+       第三次进来跟第二次同理
+    */
 
+    let b = f2(4)
+    console.log(b.next());
+    console.log(b.next(9));
+    console.log(b.next(20));
+    /* 第一次进来， f2参数x=4,第一个yield中，由于x+1,所以x=5,遇到yield停止
+       第二次进来，从上次yield停止的地方执行，由于next携带参数，所以y这一行变成了2*9 - 18，到下一行y / 3， 结果：18/3 = 6
+
+       第三次进来，next携带参数20,从z这行开始，z = 20,此时x=5,y=18,x=20,结果：42
+    */
+   console.log('案例三');
+   function* f3(){
+      console.log('第一次next:东方不败');
+      console.log(`第二次next:${yield}`);
+      console.log(`第三次next:${yield}`);
+   }
+   let c = f3()
+   c.next();  // 第一次next:东方不败
+   c.next('西方求败'); // 第二次next:西方求败
+   c.next('南天门') // 第三次next:南天门
+
+
+
+
+   console.log('=========for...of=======');
+   /* for...of可以遍历Generator函数运行时生成的Iterator对象，并且不需要调用next方法
+      如果next方法中的done返回true，那么for...of循环就会停止，并且不返回该对象,所以下面的return 5不在for...of循环中。
+   */
+   function* fo(){
+      yield 1;
+      yield 2;
+      yield 3;
+      yield 4;
+      return 5;
+   }
+   for(let i of fo()){
+      console.log(i);  // 1 2 3 4
+   }
+
+   console.log('=======Generator.prototype.throw()=======');
+   /* 
+       Generator函数返回的遍历器对象，有一个throw方法，可在函数体外抛出错误，然后再Generator函数体内捕获。
+   */
+  let s = function* (){
+      try {
+         yield;
+      } catch (e) {
+        console.log('内部捕获错误',e);
+      }
+  };
+
+  let i = s()
+  i.next();
+
+   try {
+      // i.throw('a');
+      // i.throw('b');
+      i.throw(new Error('a'));
+      i.throw(new Error('b'))
+   } catch (e) {
+      console.log('外部捕获',e);
+   }
+   /* 上面代码中，遍历器对象连续抛出了两次错误，第一个throw被Generator函数内的catch捕获。第二次throw的错误由于Generator内的catch已经执行过了，不会再捕捉到这个错误，所以这个错误被抛出了Generator函数外，被外部的catch捕获。
+      这里的抛错其实要注意一点，i是遍历器，i抛出的错误是遍历器对象抛出的，而不是全局的throw命令，所以i抛出的错误会在Generator内执行，如果Generator内已经捕捉到了，才会抛出到Generator函数外。
+   */
+
+
+
+   console.log('=======Generator.prototype.return()======');
+   /* Generator函数返回的遍历器对象，有一个return()方法，该方法可以返回给定的值，并终结遍历Generator函数。 */
+   function* gen(){
+      yield 1;
+      yield 2;
+      yield 3;
+   }
+   let ge = gen()
+   console.log(ge.next()); // {value: 1, done: false}
+   console.log(ge.return('传入参数，结束执行')); // {value: '传入参数，结束执行', done: true}
+   console.log(ge.next()); // {value: undefined, done: true}
+   /* 如果return()不传值，则返回value的属性为undefined
+      如果Generator函数内有try...finally这样的代码块，而且正在执行try代码块，那么return()会让导致即可进入finally代码块，执行完finally代码块后，才返回return的给定的值，整个函数结束。
+   */
+  function* r(){
+   yield 1;
+   try {
+      yield 2;
+      yield 3;
+   } finally {
+      yield 6;
+      yield 7;
+   }
+   yield 8;
+  }
+  let r2 = r()
+  console.log(r2.next()); // {value: 1, done: false}
+  console.log(r2.next()); // {value: 2, done: false}
+  console.log(r2.return(10)); // {value: 6, done: false}
+  console.log(r2.next());  // {value: 7, done: false}
+  console.log(r2.next());  // value: 10, done: true}
+
+  console.log('=====next()、throw()、return()的共同点=======');
+  /* 
+     next()是将yield表达式替换成一个值。
+     throw()是将yield表达式替换成一个throw语句。
+     return()是将yield表达式替换成一个return语句。
+  */
+
+  console.log('======yield* 表达式======');
+  /* 
+     如果在Generator函数内部，调用另一个Generator函数，需要在前者的函数体内部手动遍历才能完成。
+  */
+ function* fo2(){
+   yield 'a';
+   yield 'b';
+ }
+
+ function* fo3(){
+   yield 'x';
+   for(let i of fo2()) console.log(i);
+   yield 'y'
+ }
+
+ for(let k of fo3()) console.log(k);  // x a b y
+ /* 这样嵌套函数，函数内套函数需要手动遍历，如果有多个Generator函数，写起来非常麻烦；
+    因此ES6提供了yield*表达式，用来在一个Generator函数内执行另一个Generator函数；
+ */
+function* yi(){
+   yield 'x';
+   yield*  fo2();
+   yield 'y'
+}
+for(let kk of yi()) console.log(kk);  // x a b y
+
+console.log('=====作为对象属性的Generator函数()==========');
+/* 如果一个对象的属性是Generator函数，可以简写成下面的形式 */
+let obj = {
+   * gen(){
+      // ...
+   }
+}
+// 或者
+let obj2 = {
+   gen : function* () {
+      // ...
+   }
+}
+// 或者
+function* gen(){
+   // ...
+}
+let obj3 = {
+   g : gen()
+}
+
+console.log('=======Generator函数的this=========');
+/* Generator函数总是返回一个遍历器，ES6规定这个遍历器是Generator函数的实例，也继承了Generator函数的prototype对象上的方法。 */
+function* aa(){}
+aa.prototype.hello = function(){ console.log('hi'); }
+
+let a2 = aa()
+a2.hello()  // hi
+
+/* ********** */
+function* g5() {
+  this.a = 11;
+}
+
+let ob = g5();
+ob.next();
+console.log(ob.a); // undefined
+
+/* Generator函数不能跟new命令一起用，会报错 */
+// new aa()  // Uncaught TypeError: aa is not a constructor
+
+
+/* 让Generator函数返回一个正常的对象实例，既可以用next，又可以获得正常的this */
+/* 方法一：
+   生成一个空对象，使用call绑定Generator函数内部的this。这样，构造函数调用后，这个空对象就是Generator函数的实例对象。
+
+*/
+function* F(){
+   this.a = 1;
+   yield this.b = 2;
+   yield this.c = 3;
+}
+let o = {}
+let f4 = F.call(o)
+console.log(f4.next());  // {value: 2, done: false}
+console.log(f4.next());  // {value: 2, done: false}
+console.log(f4.next());  // {value: undefined, done: true}
+console.log( o.a , o.b , o.c );  // 1 2 3
+
+/* 
+   但上面这个方法执行的是遍历器对象f，但是生成的对象实例是obj，有没有办法将这两个对象统一呢？
+   方法二：将obj换成F.protytype
+*/
+function* F2(){
+   this.a = 1;
+   yield this.b = 2;
+   yield this.c = 3;
+}
+let f5 = F2.call(F2.prototype)
+console.log(f5.next());  // {value: 2, done: false}
+console.log(f5.next());  // {value: 2, done: false}
+console.log(f5.next());  // {value: undefined, done: true}
+console.log( f5.a , f5.b , f5.c );  // 1 2 3
+
+/* 再将F改造成构造函数，就可以对它执行new命令了 */
+function* fun(){
+   this.a = 1;
+   yield this.b = 2;
+   yield this.c = 3;
+}
+function F3(){
+   return fun.call(fun.prototype)
+}
+let f6 = new F3()
+
+console.log(f6.next());  // {value: 2, done: false}
+console.log(f6.next());  // {value: 2, done: false}
+console.log(f6.next());  // {value: undefined, done: true}
+console.log( f6.a , f6.b , f6.c );  // 1 2 3
 
 
 
