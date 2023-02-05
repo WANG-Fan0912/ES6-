@@ -370,6 +370,38 @@ console.log(f6.next());  // {value: undefined, done: true}
 console.log( f6.a , f6.b , f6.c );  // 1 2 3
 
 
+console.log('=========Generator的应用===========');
+/* 流程控制 */
+/* 某些场景下，有多步嵌套操作，前一个函数的返回结果，是下一个函数的初始值
+   普通函数的写起来非常麻烦，需要层层嵌套，如下
+*/
+// step(function (value1){
+//    step2(value1,function(value2){
+//       step3(value2,function(value3){
+//          // ...
+//       })
+//    })
+// })
+/* 这种写法可以使用Promise来优化 */
+// Promise.resolve(step1)
+// .then(step2)
+// .then(step3)
+// .then(step4)
+/* 上面的Promise的链式调用，解决了层层嵌套的问题，但是链式调用看起来非常不美观，而且流程上也不清晰，
+   Generator可以进一步优化流程，因为Generator的yield会造成阻塞（暂停执行）下一次next才会继续执行
+*/
+function* step(value1){
+   try {
+      let value2 = yield step1(value1);
+      let value3 = yield step2(value2);
+      let value4 = yield step3(value3);
+   } catch {
+
+   }
+}
+/* 上面的Generator将异步方法变成了同步执行，对比Promise的then()链式调用，Generator则是直接将其改成了同步的风格，每一次结果返回后，进入下一步，到下一个yield阻塞，执行函数，返回，进入下一步。
+   其实这个就是async await的一个实现，yield就相当于await，每次yield暂停，直到yield后的函数返回结果（结果内包含next）就进入下一步。
+*/
 
 
 
