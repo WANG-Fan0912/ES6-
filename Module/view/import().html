@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        console.log('============import()==============');
+        console.log('输出语句1');
+        let arr = [1,2,3]
+        arr.forEach(el=> console.log(el))
+        /* 正常情况下import是需要在页面顶层引入的，并且，import的引入的执行优先级是最高的
+           let s = sum(10,5)
+           import { sum } from '../module/import.js'
+           这种写法是允许的，程序会先执行import的引入，然后再执行let s = sum(10,5)，
+           但这种写法会默认导入模块，并且是在顶层导入，es6提供了动态导入功能：import()，当程序执行到该语句的时候才会导入，
+           并且是同步执行，import()返回的是一个Promise，所以可以使用then方法和await。
+        */
+       // Promise
+        import('../module/import.js')
+        .then(el=>{
+            console.log(el.type(100));  // number
+            console.log(el.sum(10,5));  // 50
+        })
+
+        // async-await
+        async function getImport(){
+            let { sum } = await import('../module/import.js')
+            console.log(sum(2,8));
+        }
+        getImport()  // 16
+
+        // 也可以通过解构的方式获取
+        import('../module/import.js')
+        .then(({sum})=>{
+            console.log(sum(20,5));  // 100
+        })
+
+        // defaule的默认导出，其实default就是键名
+        import('../module/import.js')
+        .then((e)=>{
+            console.log(e.default([1,2,3]));  // true
+        })
+        // default也可以通过具名的形式导入
+        import('../module/import.js')
+        .then(({default : isA})=>{
+            console.log(isA([1,2,3]));  // true
+        })
+
+        console.log('=========import.meta=========');
+        // console.log(import.meta);  // import.meta只能在模块内使用，在模块外部使用会报错
+        import('../module/import.js')
+        .then(el=>{
+            console.log(el.getMeta());  // {url: 'http://127.0.0.1:5500/module/import.js', resolve: ƒ}
+        })
+    </script>
+</body>
+</html>

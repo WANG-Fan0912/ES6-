@@ -56,6 +56,36 @@
           await返回的返回值为await右侧的函数或者原始类型的返回值。
           async返回的是Promise，所以可以使用then方法获取返回值。
        */
+
+       
+       /* async函数有多种使用形式 */
+        /* 函数声明 */
+        async function foo() {}
+
+        /* 函数表达式 */
+        const foo = async function() {}
+
+        /* 对象的方法 */
+        let obj = { async foo() {} }
+
+        /* Class的方法 */
+        class Storage {
+            constructor() {
+                this.cachePromise = caches.open('avatars')
+            }
+
+            async getAvatat(name) {
+                let cache = await this.cachePromise;
+                return cache.match(`/avatars/${name}.jpg`);
+            }
+        }
+        let storage = new Storage()
+        storage.getAvatat('jake').then(
+            // ...
+        )
+
+        /* 箭头函数 */
+        let foo = async () => {}
     </script>
 </body>
 </html>
