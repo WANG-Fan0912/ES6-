@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        console.log('=============编程风格============');
+        /* 
+           1、块级作用域
+             1):let取代var
+             2):全局常量和线程安全：let和const之间，建议优先使用const,尤其是在全局环境，不应该设置变量，只应该设置常量。
+
+            2、字符串
+             1):静态字符串一律使用单引号或反引号，不要使用双引号
+             2):动态字符串使用反引号
+
+             3、解构赋值
+              1):对数组成员对变量赋值时，优先使用解构赋值
+              2):函数的参数如果是对象的成员，优先使用解构赋值
+              3):如果函数返回多个值，优先使用对象的解构赋值，而不是数组的解构赋值。这样便于以后添加返回值，以及更改返回值的顺序。
+
+            4、对象
+              1):单行定义的对象，最后一个成员不以逗号结尾。多行定义的对象，最后一个成员以逗号结尾。
+              2):对象尽量静态化，一旦定义，就不得随意添加新属性。如果添加属性不可避免，要使用Object.assign方法。
+              3):对象的属性名是动态的，可以在创造对象的时候，使用属性表达式定义。
+        */
+       let obj = {
+        name : '东方'
+       }
+       Object.assign(obj,{info:'不败'})
+       console.log(obj);
+       /* {name : '东方',info:'不败'} */
+
+
+       /* 
+          5、数组
+            1):使用扩展运算符（...）拷贝数组
+            2):使用Array.from方法，将类似数组的对象转为数组。
+
+          6、函数
+            1): 立即执行函数可以写成箭头函数的形式
+            2):匿名函数当参数的场合，尽量用箭头函数代替。这样更简洁，而且绑定了this
+            3):简单的、单行的、不会复用的函数，建议采用箭头函数。如果函数体较为复杂，行数较多，还是应该次采用传统函数的写法。
+            4):所有配置项都应该集中在一个对象，放在最后一个参数，布尔值不可以直接作为参数。
+            5):不要在函数体内使用 arguments 变量，使用 rest 运算符（...）代替。因为 rest 运算符显式表明你想要获取参数，而且 arguments 是一个类似数组的对象，而 rest 运算符可以提供一个真正的数组。
+            6):使用默认值语法设置函数参数的默认值。  
+       */
+
+
+       /* 
+          7、Map结构
+            1):注意区分Object和Map，只有模拟现实世界的实体对象时，才使用Object。如果只是需要注意key:value的数据结构，使用Map结构。因为Map有内建的遍历机制。
+       */
+    //    let map = new Map(arr);
+
+    //     for (let key of map.keys()) {
+    //     console.log(key);
+    //     }
+
+    //     for (let value of map.values()) {
+    //     console.log(value);
+    //     }
+
+    //     for (let item of map.entries()) {
+    //     console.log(item[0], item[1]);
+    //     }
+
+
+    /* 
+       8、Class
+         1):总是用Class，取代需要prototype的操作。因为Class的写法更简洁，更易于理解。
+         2):使用extends实现继承，因为这样更简单，不会有破环instanceof运算的危险。
+    */
+
+
+    /* 
+       9、模块
+         1):ES6模块语法是JS模块的标准写法，坚持使用这种写法，取代Node.js的CommonJS语法。
+          -1:使用import取代require()
+          -2:使用export取代module.exports
+         2):export
+          -1:如果模块只有一个输出值，使用export default
+          -2:如果模块有多个输出值，除非其中某一个输出值非常重要，否则建议不要使用export default
+          -3:多个输出值如果是平等关系，export default与普通的export就不要同时使用
+         3):如果模块默认输出一个函数，函数名的首字母应该小写，表示这是一个工具方法
+         4):如果模块默认输出一个对象，对象名的首字母应该大写，表示这是一个配置值对象
+    */
+
+    /* 10、ESLint的使用 */
+
+
+    </script>
+</body>
+</html>
