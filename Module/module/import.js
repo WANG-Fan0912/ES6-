@@ -14,5 +14,5 @@ function getMeta(){
     return import.meta
 }
 
-export { type,sum,getMeta }
+export { type as t,sum,getMeta }
 export default isArray

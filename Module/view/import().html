@@ -24,7 +24,7 @@
        // Promise
         import('../module/import.js')
         .then(el=>{
-            console.log(el.type(100));  // number
+            console.log(el.t(100));  // number
             console.log(el.sum(10,5));  // 50
         })
 
@@ -46,13 +46,16 @@
         .then((e)=>{
             console.log(e.default([1,2,3]));  // true
         })
-        // default也可以通过具名的形式导入
+        // default也可以通过具名的形式导入（取别名）
         import('../module/import.js')
         .then(({default : isA})=>{
             console.log(isA([1,2,3]));  // true
         })
 
         console.log('=========import.meta=========');
+        /* 
+          开发者使用一个模块时，有时需要知道模板本身的一些信息（比如模块的路径）。ES2020 为 import 命令添加了一个元属性import.meta，返回当前模块的元信息。
+        */
         // console.log(import.meta);  // import.meta只能在模块内使用，在模块外部使用会报错
         import('../module/import.js')
         .then(el=>{
