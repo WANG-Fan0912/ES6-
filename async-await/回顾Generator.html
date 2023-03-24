@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        /* 回顾Generator函数 */
+        /* Generator函数是一个状态机，封装了多个内部状态，执行Generator函数会返回一个遍历器对象
+           Generator函数不会自动执行
+           Generator函数执行遇到yield会暂停执行并返回yield后的函数对象，直到下次next调用，从第一个yield开始执行第二个yield再次暂停返回，再次调用next，从第二个yeild开始执行到第三个yield暂停返回，以此类推
+        */
+
+        function* hello(){
+            yield 'hello';
+            yield 'world';
+            return 'hi'
+        }
+        let a = hello()
+        console.log(a.next());
+        console.log(a.next());
+        console.log(a.next());
+        console.log(a.next());
+
+        /* 
+           1、其实yield就是一个暂停表示，当next执行Generator函数后，遇到yield暂停，返回yield身后的属性对象
+           2、下一次调用next方法时，从上一次暂停的yield开始继续向下执行，直到遇到下一个yield
+           3、如果没有遇到新的yield表达式，则一直执行到函数结束，直到遇到return为止
+           4、yield表达式后的表达式，只有调用next方法，内部指针指向该语句时才会执行
+           5、如果函数内没有return，那么返回的value则是undefined,done为true
+           6、返回的done为true，则表明当前的返回是最后一次
+           7、return是最后一句执行操作，如果return后，returun下面的yield和其他逻辑均不会执行
+        */
+         /* yield后的表达式求值，只有调用next,将指针移动到这一句时才会执行 */
+         function* sum(){
+            yield 1+2
+         }
+         let s = sum()
+         console.log(s.next()); /* {value: 3, done: false} */
+         console.log(s.next()); /* {value: undefined, done: true} */
+
+         /* yield和reutrn的区别
+            相同点：
+            1、都能使函数暂停执行
+            2、都能返回紧跟在语句后的表达式的值
+
+            不同点：
+            1、yield具有记忆功能，return没有
+            2、return为最后一次执行，一个函数只能有一个return，return后，后面的语句均不会执行。yield则可以执行多次（可以有多个yield)
+         */
+
+         /* Generator内没有yield函数就相当于一个普通的懒执行函数，调用next才执行 */
+         function* lacy(){
+            console.log('执行1');
+            console.log('执行2');
+         }
+         lacy()  /* 没有任何执行 */
+         lacy().next()  /* 执行1 执行2 */
+
+         /* yield只能在Generator函数内使用，其他地方会报错 */
+         /* function yi(){ yield 'hello' } 报错 */
+
+         /* yield在表达式中，需要加括号包裹 */
+         function* sum2(){
+            console.log('hello' + (yield));
+         }
+
+         /* yield可以作为函数参数 */
+         function* sum3() {
+            foo(yield 'a' , yield 'b','普通参数')
+         }
+         function foo(...val) {
+             console.log(val);  /* ['yield参数a', 'yield参数b', '普通参数'] */
+         }
+         let s3 = sum3()
+         s3.next()
+         s3.next('yield参数a')
+         s3.next('yield参数b')
+         /* 注意，由于next方法的参数表示上一个yield表达式的返回值，所以在第一次使用next方法时，传递参数是无效的。V8 引擎直接忽略第一次使用next方法时的参数，只有从第二次使用next方法开始，参数才是有效的。从语义上讲，第一个next方法用来启动遍历器对象，所以不用带有参数。 */
+
+
+         console.log('========next函数========');
+         /* next函数
+            next函数可以让Generator函数从暂停状态到恢复运行，Generator上下文状态是不变的，
+            可以通过next方法的参数，往Generator函数内部注入值，让Generator函数在运行的不同阶段通过该参数调整函数的行为
+         */
+        function* f3(){
+            console.log('第一次next:东方不败');
+            console.log(`第二次next:${yield}`);
+            console.log(`第三次next:${yield}`);
+        }
+        let c = f3()
+        c.next();  // 第一次next:东方不败
+        c.next('西方求败'); // 第二次next:西方求败
+        c.next('南天门') // 第三次next:南天门
+
+
+
+        function* f2(x){
+        let y = 2 * (yield (x + 1));
+        let z = yield (y / 3);
+        return (x + y + z)
+        }
+        let b = f2(4)
+        console.log(b.next());  /* 5 */
+        console.log(b.next(9));  /* 6 */
+        console.log(b.next(20)); /* 42 */
+        /* 第一次进来，f2的参数等于4，4 + 1 = 5，遇到yield暂停
+           第二次进来，由于next携带参数9,所以为 2 * 9 = 18 ， 18/3 = 6
+           第三次进来，由于next携带参数20，所以z = 20 , x=5，y=18，z=20 , x+y+z = 43
+        */
+
+        /* 注意，由于next方法的参数表示上一个yield表达式的返回值，所以在第一次使用next方法时，传递参数是无效的。V8 引擎直接忽略第一次使用next方法时的参数，只有从第二次使用next方法开始，参数才是有效的。从语义上讲，第一个next方法用来启动遍历器对象，所以不用带有参数。 */
+
+
+    </script>
+</body>
+</html>
