@@ -17,7 +17,7 @@
                 obj += item;
             })
             /* 判断数组中的值的总和是否是偶数 */
-           obj % 2 == 0 ? resolve(obj) : reject(obj)
+           obj % 2 == 0 ? resolve({data:obj}) : resolve({error:obj})
          })
         }
 
@@ -45,6 +45,9 @@
         }
         getPromise(11)
 
+
+        
+
         /* resolve\reject返回的是promise，所以可以直接catch捕获 */
         async function getPromise2(val){
             let data = await promise(val).catch(err=>console.log(err))
@@ -53,8 +56,7 @@
             if(!data) return
             console.log('后续逻辑',data);
         }
-        getPromise2(10)
-
+        getPromise2(10)  
 
     </script>
 </body>
