@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+    <button id="btn">登录</button>
+
+    <script>
+        /* 单例模式的定义：保证一个类仅有一个实例，并提供一个访问它的全局访问点。 */
+        /* 单例模式是一种常用的模式，有一些对象我们旺旺只需要一个，比如线程池、全局缓存、浏览器中的window对象等。
+           在js开发中，单例模式的用途同样非常广泛。试想一下，当我们单击登录按钮的时候，页面中会出现一个登录悬浮窗，而这个
+           登录悬浮窗是唯一的，无论单击多少次登录按钮，这个弹窗都只会创建一次， 那么这个登录弹窗就适合用单例模式来创建。
+        */
+       class Login {
+        createLayout() {
+            let oDiv = document.createElement('div')
+            oDiv.innerHTML = '我是登录框'
+            document.body.appendChild(oDiv)
+            oDiv.style.display = 'none'
+            return oDiv  // 如果createLayout被调用则返回div节点，否则返回createLayout函数
+        }
+       }
+
+       class Single {
+        // 此处是一个闭包
+        getSingle(fn) {
+            let result;
+            return function(){
+                // result存在则返回result 否则返回右侧的值
+                // 这里result第一次被右侧表达式赋值后由于闭包的缘故会持久存储，所以后续只会返回result
+                // 核心思想：已经创建则直接返回
+                return result || (result = fn.apply(this,arguments))
+            }
+        }
+       }
+
+       // dom
+       let oBtn = document.getElementById('btn');
+       let single = new Single();  // 实例化
+       let login = new Login();  // 实例化
+       // 将创建的createLayout函数传入getSingle
+       let createLoginLayer = single.getSingle(login.createLayout);  
+       oBtn.onclick = function(){
+        let layout = createLoginLayer();  // 调用createLoginLayer方法，也就是调用createLayout()这个方法
+        layout.style.display = 'block'  // 更改div显示状态
+       }
+
+       /* 1、单例模式的核心思想，如果已经实例已经创建，则直接返回
+          2、符合开放封闭原则
+       */
+    </script>
+</body>
+</html>
