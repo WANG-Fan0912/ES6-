@@ -15,7 +15,64 @@
            比如：明星都有经纪人作为代理。如果想请明星来办一场商业演出，只能联系他的经纪人。
            经纪人会把商业演出的细节和报酬都谈好后，再把合同交给明星签字。
         */
+       /* 此处举一个使用代理对象加载图片的例子来理解代理模式。当网络不好的时候，
+       图片的加载需要一段时间，这就会产生空白，影响用户体验，这时候我们可以在图片真正加载完之前，
+       使用一张loading占位图，等图片真正加载完再给图片设置src属性。 */
+       (function(){
+
+        class MyImage {
+            constructor() {
+                this.img = new Image();  /* Image()函数将会创建一个新的HTMLImageElement实例。 */
+                document.body.appendChild(this.img) /* 将Image实例添加到body上 */
+            }
+            // 更换img实例的src链接，以传入的参数为准
+            setSrc(src){
+                this.img.src = src
+            }
+        }
+
+        class ProxyImage {
+            constructor() {
+                this.proxyImage = new Image() /* 创建新的HTMLImageElement实例 */
+            }
+            // 更换img实例的src链接，以传入的参数为准
+            setSrc(src) {
+                let myImageObj = new MyImage(); 
+                // 将页面上img的src链接替换为该链接
+                myImageObj.img.src = 'https://sc.chinaz.com/static/common/com_images/nosearch.png' // 未加载出图片时展示该图
+                
+
+                /* 当前创建的img.src = 传入的参数,这一步跟页面显示的图片没关系，但又有关系,
+                   这一个关联下一步onload事件，当目标图片加载完后触发onload事件，在该事件中替换页面显示的图片，
+                   这一步就是为了判断目标图片是否加载完做准备 */
+                this.proxyImage.src = src
+
+                // onload:文件内容完全加载完成后（包括图像、CSS等），触发该事件
+                // 也就是说当需要加载的图片加载完后触发该函数
+                this.proxyImage.onload = function() {
+                    myImageObj.img.src = src  // 替换页面显示的img.src
+                }
+            }
+        }
+
+        let proxyImage = new ProxyImage();
+        proxyImage.setSrc('https://scpic2.chinaz.net/files/default/imgs/2023-04-27/d7abb199059a73ff_s.jpg')  // 需要加载的图片
+       })()
+
+       /* 本例中，本例类有自己的setSrc方法，如果有一天网络速度已经不需要预加载了，
+       我们可以直接使用本体对象的setSrc方法，并且不需要改动本体类代码，而且可以删除代理类 */
+       /* 
+        例如：
+        let myImageObj = new MyImage(); 
+        myImageObj.setSrc('目标图链接') 
+       */
+
+       /* 
+       总结：
+       1、代理模式符合开放封闭原则
+       2、本地对象和代理对象拥有相同的方法，在用户看来并不知道请求的是本体对象还是代理对象
        
+       */
     </script>
 </body>
 </html>

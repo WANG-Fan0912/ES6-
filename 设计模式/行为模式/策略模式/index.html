@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+
+    <script>
+        /* 定义一系列的算法，把它们一个个封装起来，并使它们可以替换 */
+        /* 这里定义了三个不同的环境，根据运行的指令来判断启用对应的接口 */
+        let obj = {
+            dev : {
+                http : 'devxxx'
+            },
+            build : {
+                http : 'buildxxx'
+            },
+            preview : {
+                http : 'previewxxx'
+            }
+        }
+        function run(val) {
+           return obj[val]
+        }
+        console.log(run('dev')); // {http: 'devxxx'}
+    </script>
+</body>
+</html>

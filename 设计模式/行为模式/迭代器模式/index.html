@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+    <script>
+        /* 迭代器模式是指提供一种方法顺序访问一个聚合对象中的各个元素，
+        而又不需要暴露该对象的内部表示。迭代器模式可以把迭代的过程从业务逻辑中分离出来，
+        在使用迭代器模式之后，即使不关心对象的内部构造，也可以按顺序访问其中的每个元素。 */
+        class Creater {
+            constructor(list) {
+                this.list = list
+            }
+
+            // 创建一个迭代器，也叫遍历器
+            createIterator() {
+                // this表示该类下的所有数据，以对象的形式存储，此处就是list
+                return new Iterator(this)
+            }
+        }
+
+        class Iterator {
+            constructor(creater) {
+                this.list = creater.list
+                this.index = 0
+            }
+
+            // 判断是否遍历完数据
+            isDone() {
+                // 用来遍历list，根据状态判断是否遍历结束
+                if(this.index >= this.list.length) {
+                    return true
+                }
+                return false
+            }
+            // 移动index的指针
+            next() {
+                /* index++，通过list[index]来获取list内对应index的值,此处的index++只能用表达式放到一行写， 放在前后都不合适*/
+                return this.list[this.index++]
+            }
+        }
+
+        let arr = ['a','b','c','d']
+        
+        let creater = new Creater(arr)
+        let iterator = creater.createIterator()
+        console.log(iterator.list); // ['a','b','c','d']
+        // while 满足条件会循环遍历，直到条件不符
+        while(!iterator.isDone()){
+            console.log(iterator.next());
+            // a
+            // b
+            // c
+            // d
+        }
+
+
+        /* 总结
+           1、js中的有序数据集合有Array,Map，Set,String,typeArray,arguments,NodeList,不包括Object
+           2、任何部署了[Symbol.iterator]接口的数据都可以使用for...of循环遍历
+           3、迭代器模式使目标对象和迭代器对象分离，符合开放封闭原则
+        */
+    </script>
+</body>
+</html>
