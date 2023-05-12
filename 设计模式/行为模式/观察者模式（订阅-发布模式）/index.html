@@ -17,11 +17,14 @@
         constructor() {
             this.eventTypeObj = {}
         }
+
         on(eventType,fn){
             if(!this.eventTypeObj[eventType]){
                 // 按照不同的订阅事件类型，存储不同的订阅回调
                 this.eventTypeObj[eventType] = []
+                
             }
+            console.log(this.eventTypeObj);
             this.eventTypeObj[eventType].push(fn)
         }
         emit(){
@@ -59,10 +62,20 @@
         console.log(data);
        }
        let event = new Event();
+
+
        event.on('click',handleFn)
+
        event.emit('click','5')  // 6
+
        event.remove('click',handleFn)
+
        event.emit('click','6') // 不打印
+
+
+
+
+
     </script>
 </body>
 </html>
