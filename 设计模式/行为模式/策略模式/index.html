@@ -10,9 +10,27 @@
     <div>打开控制台查看结果</div>
 
     <script>
+        (function(){
+            function fn(val) {
+                if(val == 'dev'){
+                    console.log('dev模式');
+                }
+                if(val == 'build'){
+                    console.log('build模式');
+                }
+                if(val == 'preview'){
+                    console.log('preview模式');
+                }
+            }
+            fn('dev');
+
+        })();
+
+
         /* 定义一系列的算法，把它们一个个封装起来，并使它们可以替换 */
         /* 这里定义了三个不同的环境，根据运行的指令来判断启用对应的接口 */
-        let obj = {
+        (function(){
+            let obj = {
             dev : {
                 http : 'devxxx'
             },
@@ -27,6 +45,8 @@
            return obj[val]
         }
         console.log(run('dev')); // {http: 'devxxx'}
+        })()
+
     </script>
 </body>
 </html>

@@ -11,7 +11,7 @@
 
     <script>
         /* 代理模式是为一个对象提供一个代用品或占位符，以便控制对它的访问。
-           代理模式是一种非常有意义的模式，在生活正可以找到很多代理模式的场景。
+           代理模式是一种非常有意义的模式，在生活中可以找到很多代理模式的场景。
            比如：明星都有经纪人作为代理。如果想请明星来办一场商业演出，只能联系他的经纪人。
            经纪人会把商业演出的细节和报酬都谈好后，再把合同交给明星签字。
         */
@@ -73,6 +73,50 @@
        2、本地对象和代理对象拥有相同的方法，在用户看来并不知道请求的是本体对象还是代理对象
        
        */
+
+       console.log('============练习===============');
+
+       (function(){
+           class MyImage {
+                constructor() {
+                    this.img = new Image(); // 创建一个HtmlImageElement实例
+                    document.body.appendChild(this.img); // 挂载到页面上
+                    this.img.style = 'border : 1px solid red;'
+                }
+
+                // 更换img实例的src链接，以传入的参数为准
+                setSrc(src) {
+                  this.img.src = src;
+                }
+           }
+
+           /* 这个class其实是作为一个转接站，在constructor创建的img标签并不会渲染到页面上，只用于判断图片是否加载完成，未加载则用占位图，加载完则用完成图，其实文件的上传也可以这样做 */
+           class ProxyImage {
+            constructor() {
+                this.proxyImage = new Image(); // 创建新的HTMLImageElement实例
+            }
+
+            setSrc(src){
+                let myImage = new MyImage();
+                // 更改MyImage中img.src的链接
+                myImage.img.src = 'https://sc.chinaz.com/static/common/com_images/nosearch.png'
+
+                /* 当前创建的img.src = 传入的参数,这一步跟页面显示的图片没关系，但又有关系,
+                   这一个关联下一步onload事件，当目标图片加载完后触发onload事件，在该事件中替换页面显示的图片，
+                   这一步就是为了判断目标图片是否加载完做准备 */
+                this.proxyImage.src = src;
+                 // onload:文件内容完全加载完成后（包括图像、CSS等），触发该事件
+                this.proxyImage.onload = function() {
+                    myImage.img.src = src; // 替换页面显示的img.src
+                }
+            }
+           }
+
+           let proxyImage = new ProxyImage();
+           proxyImage.setSrc('https://scpic2.chinaz.net/files/default/imgs/2023-04-27/d7abb199059a73ff_s.jpg')  // 需要加载的图片
+
+
+       })()
     </script>
 </body>
 </html>
