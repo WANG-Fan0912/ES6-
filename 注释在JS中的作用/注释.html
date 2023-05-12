@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+    <script>
+        /**
+         * 文档注释
+         * 这是一个计算数据的函数
+         * 这种注释可以在调用的时候提示
+         * 开头不能加@,否则对应的行不会提示
+          */
+         function sum(...s) {
+            console.log(s);
+         }
+
+         /**
+          * @param { number } a
+          * @param { string } b 
+           */
+         function descs(a = 0,b = 1){
+             console.log(a,b);
+         }
+        // 上面的注释代表给指定的参数设置数据类型提示，在函数调用的时候会有提示，而且花括号的内容可以自定义，在调用函数是会提示
+         descs()
+         
+
+
+         /**
+          * @returns { string }
+          */
+         function res(){
+            return '你好'
+         }
+         // 上面的注释代表给返回的数据类型提示，调用函数的时候会有提示，而且花括号的内容可以自定义，在调用函数是会提示
+         res()
+
+
+
+
+         
+
+
+        
+    </script>
+</body>
+</html>
