@@ -11,6 +11,10 @@
     <button id="btn1">按钮1</button>
     <button id="btn2">按钮2</button>
     <button id="btn3">按钮3</button>
+    <hr>
+    <button id="switch1">开关1</button>
+    <button id="switch2">开关2</button>
+    <button id="switch3">开关3</button>
     <script>
         /* 在命令的发布和接收者之间，定义一个命令对象，命令对象暴露出一个统一的接口给命令的发布者，
         而命令的发布者不用去管接收者是如何执行命令的，做到命令发布者和接收者的解耦。*/
@@ -92,7 +96,71 @@
 
 
     console.log('================练习================');
-    
+    (function(){
+    let switch1 = document.getElementById('switch1')
+    let switch2 = document.getElementById('switch2')
+    let switch3 = document.getElementById('switch3')
+
+    /** 定义一个命令发布者的类 */
+    class Executor {
+        setCommand(btn,command){
+            btn.onclick = function() {
+                command.execute()
+            }
+        }
+    }
+
+    /** 定义一个接收者 */
+    class Menu {
+        refresh() {
+            console.log('刷新菜单1');
+        }
+
+        addSubMenu() {
+            console.log('增加菜单1');
+        }
+    }
+
+    /** 定义一个刷新菜单的命令对象类 */
+    class RefreshMenu {
+        // 接收指令
+        constructor(receiver) {
+            this.receiver = receiver
+        }
+
+        /** 暴露出统一的接口给命令发布者Executor */
+        execute() {
+            this.receiver.refresh()  // 执行refresh()方法
+        }
+    }
+
+    /** 定义一个增加子菜单的命令对象类 */
+    class AddSubMenu {
+        // 接收指令
+        constructor(receiver){
+            this.receiver = receiver;
+        }
+
+        /** 暴露出统一的接口给命令发布者Executor */
+        execute() {
+            this.receiver.addSubMenu()  // 执行refresh()方法
+        }
+    }
+
+    let menu = new Menu(); // 命令接收者
+    let executor = new Executor(); // 命令发布者
+
+    let refreshMenu = new RefreshMenu(menu); // 刷新菜单的命令对象类
+    // 通过命令发布者发布命令，调用刷新菜单的类
+    executor.setCommand(switch1,refreshMenu); // 刷新菜单
+
+    let addSubMenu = new AddSubMenu(menu); // 增加菜单的命令对象类
+    // 通过命令发布者发布命令，调用新增菜单的类
+    executor.setCommand(switch2,addSubMenu)  // 增加菜单
+
+    })()
+
+
     </script>
 </body>
 </html>
