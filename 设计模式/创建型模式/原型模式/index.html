@@ -29,6 +29,28 @@
         console.log(obj.getName());  // 东方
         console.log(obj.job);  // IT
         console.log(obj.__proto__ === prototype);  // true
+
+
+
+
+        console.log('============练习===========');
+        (function(){
+            let prototype = {
+                name : '不败',
+                getName : function (){
+                    return this.name
+                }
+            }
+
+            let obj = Object.create(prototype,{
+                text : {value :'西方'}
+            })
+
+            console.log(obj.name);  // 不败
+            console.log(obj.getName()); // 不败
+            console.log(obj.text); // 西方
+            console.log(obj.__proto__ === prototype);  // true  
+        })()
     </script>
 </body>
 </html>

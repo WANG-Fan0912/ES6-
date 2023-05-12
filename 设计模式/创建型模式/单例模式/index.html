@@ -10,9 +10,11 @@
     <div>打开控制台查看结果</div>
     <button id="btn">登录</button>
 
+    <button id="btn2">登录2</button>
+
     <script>
         /* 单例模式的定义：保证一个类仅有一个实例，并提供一个访问它的全局访问点。 */
-        /* 单例模式是一种常用的模式，有一些对象我们旺旺只需要一个，比如线程池、全局缓存、浏览器中的window对象等。
+        /* 单例模式是一种常用的模式，有一些对象我们往往只需要一个，比如线程池、全局缓存、浏览器中的window对象等。
            在js开发中，单例模式的用途同样非常广泛。试想一下，当我们单击登录按钮的时候，页面中会出现一个登录悬浮窗，而这个
            登录悬浮窗是唯一的，无论单击多少次登录按钮，这个弹窗都只会创建一次， 那么这个登录弹窗就适合用单例模式来创建。
         */
@@ -53,6 +55,48 @@
        /* 1、单例模式的核心思想，如果已经实例已经创建，则直接返回
           2、符合开放封闭原则
        */
+
+
+       console.log('=============练习=============');
+       /* 单例模式
+          用于保证我们的执行对象只有一个，比如线程池、全局缓存等
+          例如：登录弹窗，我们点击登录时会弹出一个弹窗，如果此时再点击也只会显示刚才展示过的弹窗。也就是说，无论点击多少次登录，该弹窗只弹一次。
+          单例模式具有缓存机制，如果上次存储的数据还在，那么会调用上次的数据
+       */
+      (function(){
+        class Login {
+        createDialog() {
+           let divs = document.createElement('div')
+           divs.innerHTML = '我是登录弹窗2'
+           document.body.appendChild(divs)
+           divs.style.display = 'none'
+           return divs
+        }
+      }
+
+      class Single {
+        getDialog(info) {
+            let result = null;
+            return function(){
+                // (result = info.apply(this,arguments)) 就是将arguments赋值给info并更改info的this为当前对象的this，然后再赋值给result,apply也有继承的作用
+                return result || (result = info.apply(this,arguments))
+            }
+        }
+      }
+
+      /* 获取dom */
+      let btn = document.getElementById('btn2')
+      let login = new Login();
+      let single = new Single();
+      let createDialog = single.getDialog(login.createDialog);
+      btn.addEventListener('click',function(){
+        let dialog = createDialog();
+        console.log(dialog);
+        dialog.style.display = 'block';
+      })
+      })()
+
+
     </script>
 </body>
 </html>

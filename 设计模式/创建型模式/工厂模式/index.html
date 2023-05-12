@@ -29,11 +29,50 @@
        let user2 = creator.create('西方');
        console.log(user2.name);  // 西方
 
-       /* 用一个Creator类集合其它的嘞，通过Creator类作为公共接口来指向新创建的对象,这个Creator就是一个工厂，内部集合了所有的业务逻辑 */
+       /* 用一个Creator类集合其它的类，通过Creator类作为公共接口来指向新创建的对象,这个Creator就是一个工厂，内部集合了所有的业务逻辑 */
        /* 
           1、构造函数和创建者分离，对new操作进行封装。
           2、符合开放封闭原则
        */
+
+
+
+       console.log('============练习===========');
+       (function(){
+         /* 工厂模式 */
+         /* 工厂模式就是将所有的类集中到一个公共类中，调用公共类来驱动业务 */
+         class Hello {
+            constructor(name) {
+               this.name = name
+            }
+            seyHi(){
+              console.log(`你好${this.name}`);
+            }
+         }
+
+         class Sleep {
+            constructor(info){
+               this.sleep = info
+            }
+         }
+
+         /* 通过公共类驱动其他的业务，符合开放封闭原则 */
+         class Plant {
+            Hi(params){
+               let hi = new Hello(params)
+               return hi.seyHi()
+            }
+            sleep(params){
+               return new Sleep(params)
+            }
+         }
+         
+         let info = new Plant();
+         info.Hi('世界');  // 你好世界
+         console.log(info.sleep('睡觉').sleep);  // 睡觉
+              
+       })()
+       
     </script>
 </body>
 </html>
