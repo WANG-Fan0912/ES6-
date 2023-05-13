@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+    <script>
+        /* 
+        发布-订阅模式又叫观察者模式，它定义对象间的一种一对多的依赖关系，当一个对象的状态发生改变时，
+        所有依赖与它的对象都将得到通知。在js开发中，我们一般用事件模型来替代传统的发布-订阅模式。
+        */
+
+       class Event {
+        constructor() {
+            this.eventTypeObj = {}
+        }
+
+        /**
+         * eventType:事件类型
+         * fn:事件函数
+          */
+        on(eventType,fn){
+            // 事件类型在事件中不存在
+            if(!this.eventTypeObj[eventType]){
+                // 按照不同的订阅事件类型，存储不同的订阅回调
+                this.eventTypeObj[eventType] = []
+            }
+            // 事件类型存在则添加事件
+            this.eventTypeObj[eventType].push(fn)
+        }
+
+        emit(){
+            // 可以理解为arguments借用shift方法
+            let eventType = Array.prototype.shift.call(arguments)
+            let eventList = this.eventTypeObj[eventType]
+            for(let i = 0 ; i < eventList.length ; i++){
+                eventList[i].apply(eventList[i],arguments)
+            }
+        }
+
+        remove(eventType,fn){
+            // 如果使用remove方法，fn为函数名称，不能是匿名函数
+            let eventTypeList = this.eventTypeObj[eventType]
+            if(!eventTypeList){
+                // 如果没有被人订阅改事件，直接返回
+                return false
+            }
+            if(!fn){
+                // 如果没有传入取消订阅的回调函数，则改订阅类型的事件全部取消
+                eventTypeList && (eventTypeList.length = 0)
+            } else {
+                for(let i = 0 ; i < eventTypeList.length; i++){
+                    if(eventTypeList[i] === fn){
+                        eventTypeList.splice(i,1)
+                        // 删除之后，i--保证下轮循环不会漏掉没有被遍历到的函数名
+                    }
+                }
+            }
+        }
+       }
+
+
+       let handleFn = function(data){
+        console.log(data);
+       }
+       let event = new Event();
+
+
+       event.on('click',handleFn)
+
+       event.emit('click','5')  // 5
+
+       event.remove('click',handleFn)
+
+       event.emit('click','6') // 不打印
+ 
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+    <button id="btn">开关</button>
+    <script>
+        /* 状态模式：状态模式允许一个对象在其内部状态改变的时候改变行为。
+        这个对象看上去像是改变了它的类一样。状态模式把所研究的对象行为包装在不同的状态对象里，
+        每一个状态对象都属于一个抽象状态类的一个子类。状态模式的意图是让一个对象在其内部状态改变的时候，其行为也随之改变。
+        状态模式需要对每一个系统可能取得的状态创立一个状态类的子类。当系统的状态发生变化时，系统边改变所选的子类。 */
+
+        /* 举一个关于开关控制电灯的例子，电灯只有一个开关，第一次按下打开弱光，第二次按下打开强光，第三次按下关闭。 */
+        
+        /** 定义一个关闭状态的类 */
+        class OffLightState {
+            constructor(light) {
+                this.light = light
+            }
+            /** 每个类都需要这个方法，在不同状态下都需要触发这个方法 */
+            pressBtn() {
+                // 在这里调用Light类中的setState，将下一个阶段的光状态类传入，所以这里是第一步，下一个状态传入后，再次点击就会进到第二步
+                this.light.setState(this.light.weakLightState);
+                console.log('开启弱光');
+            }
+        }
+
+        /** 定义一个弱光状态的类 */
+        class WeakLightState {
+            constructor(light) {
+                this.light = light
+            }
+            /** 每个类都需要这个方法，在不同状态下都需要触发这个方法 */
+            pressBtn() {
+                // 在这里调用Light类中的setState，将下一个阶段的光状态类传入，所以这里是第二步，下一个状态传入后，再次点击就会进到第三步
+                this.light.setState(this.light.strongLightState);
+                console.log('开启强光');
+            }
+        }
+
+        /** 定义一个强光状态的类 */
+        class StrongLightState {
+            constructor(light) {
+                this.light = light
+            }
+            /** 每个类都需要这个方法，在不同状态下都需要触发这个方法 */
+            pressBtn() {
+                // 在这里调用Light类中的setState，将下一个阶段的光状态类传入，所以这里是第三步，下一个状态传入后，再次点击就会进到第一步
+                this.light.setState(this.light.offLightState);
+                console.log('关闭电灯');
+            }
+        }
+
+        // 灯光类的集合，存储所有的状态类
+        class Light {
+            constructor() {
+                this.offLightState = new OffLightState(this);
+                this.weakLightState = new WeakLightState(this);
+                this.strongLightState = new StrongLightState(this);
+                this.currentState = null;
+            }
+
+            // 用来更改状态
+            setState(newState) {
+                this.currentState = newState;
+            }
+
+            // 初始化点击
+            init() {
+                this.currentState = this.offLightState;
+            }
+        }
+
+        let light = new Light();  // 实例化Light
+        light.init();
+        let btn = document.getElementById('btn')
+        btn.onclick = function() {
+            light.currentState.pressBtn()
+        }
+
+        /* 总结
+           1、通过定义不同的状态类，根据状态的改变而改变对象的行为，而不必把大量的逻辑都写在被操作对象的类中，而且容易增加新的状态。
+           2、符合开放封闭原则。
+        */
+
+    </script>
+</body>
+</html>

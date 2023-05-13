@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+    <!-- <div style="width:100px;height:50px;background: #ccc;" onclick="btnBox()">
+        <button class="clickBtn">点击事件</button>
+    </div> -->
+
+    <div style="width:100px;height:50px;background: #ccc;" class="btnBox">
+        <button class="clickBtn">点击事件</button>
+    </div>
+
+    <script>
+
+        // let clickBtn = document.querySelector('.clickBtn')
+        // addEventListener事件监听器
+        // clickBtn.addEventListener('click',function(e){
+        //     console.log('按钮被点击');
+        //     e.stopPropagation(); // 阻止事件冒泡
+        //     e.preventDefault(); //阻止默认跳转
+        // })
+        // function btnBox(){
+        //     console.log('div被点击');
+        // }
+
+        let btnBox = document.querySelector('.btnBox')
+        btnBox.addEventListener('click',function(e){
+            if(e.target.className === 'clickBtn'){
+                console.log('按钮被点击');
+            }
+        })
+
+        // split() 把一个字符串分割成字符串数组:
+        let a = 'hello world'.split(' ')
+        let a2 = 'hello world'.split('')
+        let a3 = 'hello world'.split('',3)
+        console.log(a);  //  ['hello', 'world'] 传入一个字符串，以传入的字符串为标准切割字符串为数组
+        console.log(a2); // ['h', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd'] 完全切割
+        console.log(a3); // ['h', 'e', 'l'] 切割后，提取返回的数组的前三位
+
+
+        // slice() 方法可从已有的数组中返回选定的元素。slice() 方法可提取字符串的某个部分，并以新的字符串返回被提取的部分。注意： slice() 方法不会改变原始数组。
+        let arr = ['a','b','c','d','e','f']
+        let b = arr.slice(1,3) 
+        console.log(b); // ['b', 'c'] 截取数组中的值，第一个参数为开始位置，第二个参数为结束位置（不包含结束位置）
+
+
+        console.log('================');
+        console.log('函数创建的方式');
+        /* 声明式 */
+        function sum() {
+            
+        }
+        /* 表达式 */
+        const sum2 = function(){}
+        const sum3 = () => {}
+
+        /* 匿名函数 */
+        // function(){} // 只能自己调用自己
+
+        // 自我执行
+        (function(){
+            console.log(111);
+        })()
+
+        // return的匿名函数调用
+        function em(){
+            return function(){
+                console.log('匿名函数1');
+            }()
+        }
+        em() // return的匿名函数的调用
+        // 或
+        function em2(){
+            return function(){
+                console.log('匿名函数2');
+            }
+        }
+        em2()() // return的匿名函数的调用
+
+        function em3(){
+            return function(){
+                return function(){
+                    console.log('匿名函数3');
+                }
+            }
+        }
+        em3()()() // return的匿名函数的调用
+        
+        
+
+
+
+
+
+
+
+
+        
+    </script>
+</body>
+</html>

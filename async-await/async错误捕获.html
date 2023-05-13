@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+    <script>
+        function promise (...object) {
+            /* new Promise为立即执行任务  return Promise可以后续调用then等方法 */
+         return new Promise(function(resolve,reject){
+            let obj = null;
+            object.map((item,index)=>{
+                obj += item;
+            })
+            /* 判断数组中的值的总和是否是偶数 */
+           obj % 2 == 0 ? resolve({data:obj}) : resolve({error:obj})
+         })
+        }
+
+        /* then\catch方法捕获错误 */
+        promise(11).then(el=>{
+            console.log('then',el);
+        }).catch(err => {
+            console.log('catch',err);
+        })
+
+        /* promise可以直接使用then或catch或finally */
+        promise(11).catch(err=> console.log(err))
+
+        /* async-await 的错误捕获
+           由于await或阻塞任务，一单报错不捕获错误会引起进程阻塞，需要catch
+           通常会用try\catch
+        */
+        async function getPromise(val){
+        try {
+            let data = await promise(val)
+            console.log('async',data);
+        } catch {
+            console.log('await报错');
+        }
+        }
+        getPromise(11)
+
+
+        
+
+        /* resolve\reject返回的是promise，所以可以直接catch捕获 */
+        async function getPromise2(val){
+            let data = await promise(val).catch(err=>console.log(err))
+            console.log('async2',data); /* 如果promise是reject，那么这里的返回值为undefined */
+            /* 需要判断是否为undefined，如果是则证明reject了,需要return掉后续的执行操作 */
+            if(!data) return
+            console.log('后续逻辑',data);
+        }
+        getPromise2(10)  
+
+    </script>
+</body>
+</html>

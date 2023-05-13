@@ -131,7 +131,7 @@
    next第三遍，reset等于true，进入判断更改i的值为-1,遍历的i从-1开始
     */
 
-    /* next可以让Generator函数从暂停状态到恢复运行，Generator的上下文状态时不变的，但是我们可以通过next方法的参数，让Generator函数开始运行时，往内部注入值，让Generator函数在运行的不同阶段，通过该参数调整函数行为。 */
+    /* next可以让Generator函数从暂停状态到恢复运行，Generator的上下文状态是不变的，但是我们可以通过next方法的参数，让Generator函数开始运行时，往内部注入值，让Generator函数在运行的不同阶段，通过该参数调整函数行为。 */
     console.log('案例二');
     function* f2(x){
       let y = 2 * (yield (x + 1));
@@ -152,9 +152,9 @@
     console.log(b.next(9));
     console.log(b.next(20));
     /* 第一次进来， f2参数x=4,第一个yield中，由于x+1,所以x=5,遇到yield停止
-       第二次进来，从上次yield停止的地方执行，由于next携带参数，所以y这一行变成了2*9 - 18，到下一行y / 3， 结果：18/3 = 6
+       第二次进来，从上次yield停止的地方执行，由于next携带参数，所以y这一行变成了2*9 = 18，到下一行y / 3， 结果：18/3 = 6
 
-       第三次进来，next携带参数20,从z这行开始，z = 20,此时x=5,y=18,x=20,结果：42
+       第三次进来，next携带参数20,从z这行开始，z = 20,此时x=5,y=18,x=20,结果：43
     */
    console.log('案例三');
    function* f3(){
