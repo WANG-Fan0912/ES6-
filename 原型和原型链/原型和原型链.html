@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=500 , initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>打开控制台查看结果</div>
+    <script>
+        /* 
+            对应名称
+            prototype : 原型
+            __proto__ : 原型链（链接点） 隐式原型
+
+            从属关系
+            prototype -> 函数的一个属性：对象{}
+            __proto__ -> 对象Object的一个属性: 对象{}
+            对象的__proto__保存着该对象的构造函数的prototype
+        */
+
+        // // prototype -> 函数的一个属性：对象{}
+        // function Test () {}
+        // console.log(Test.prototype);
+
+        // // __proto__ -> 对象Object的一个属性: 对象{}
+        // const test = new Test();
+        // console.log(test.__proto__);
+
+        // // 对象的__proto__保存着该对象的构造函数的prototype
+        // console.log(test.__proto__ === Test.prototype); 
+
+        // console.log(Test.prototype.__proto__);
+        // console.log(Test.prototype.__proto__ === Object.prototype);
+        // console.log(Object.prototype.__proto__);  // null
+
+        // console.log('========================================');
+
+
+        // (显示)原型：prototype
+        // 1、原型是一个普通对象
+        // 2、只有构造函数才具备该属性
+        // 3、公有属性可操作
+
+        // 隐式原型：__proto__
+        // 1、只有对象（普通对象、函数对象）才具备
+        // 2、私有的对象属性，不可操作
+
+        // prototype是一个对象
+        // 例如：一个字符串，为什么能调用split这个方法，字符串本身是没有这个方法的，但它的显示原型prototype上有这个方法，那么这个字符串就可以调用这个方法。也就是说，字符串有个爸爸，儿子没有，爸爸有就可以了，直接拿过来用。
+
+
+        let str = 'hello' // new String()
+        // console.log(str);
+        // console.log(str.length);
+
+        console.log(new String());
+
+        String.prototype.DCodes = function(){
+            // console.log('你好DCodes');
+        }
+        str.DCodes()
+
+        // 构造函数
+        function Person(){
+            this.name = '东方不败'
+        }
+        Person.prototype.sum = function(a,b){return a + b}
+        let per = new Person()
+        // console.log(per);
+        // console.log(per.sum(1,2));
+
+
+        
+
+    //     // 给普通对象的原型上添加sum方法
+    //     // 显示原型其实就是一个object，所以可以直接.xxx添加属性
+        // Person.prototype.sum = function(a,b){return a + b}
+
+        // 实例化Person()
+        // let obj = new Person();
+
+        // // Person原型上有这个方法，obj就可以直接拿过来用
+        // console.log(obj.sum(1,2));
+        // console.log(obj);
+
+
+    //     /* 
+    //        我们在生成一个数组构造函数的时候，这个数组本身是没有任何东西的，但我们可以调用数组的方法，为什么?因为数组的构造函数有这些方法，所以我们可以调用。数组本身有没有不重要，只要构造函数有就可以。
+    //     */
+
+
+    // let hello = 'hello'
+    // console.log(hello.__proto__ === String.prototype);
+
+    //    // 隐式原型：__proto__
+    //    // 1、只有对象（普通对象、函数对象）才具备
+    //    // 2、私有的对象属性，不可操作
+
+    //    let arr = []; // new Array()
+    //    // 普通的变量是没有原型的，打印prototype为undefined
+    //    console.log(arr.prototype); // undefined
+
+    //    // 由于prototype原型只有构造函数才有，普通对象是没有prototype的，那么普通对象按理来说是无法调用prototype原型方法的。但是，普通对象有一个__proto__隐式原型，隐式原型===显示原型，所以普通对象也可以调用prototype的方法。
+
+    //    // 普通的变量有隐式原型，隐式原型等于显示原型
+    //    // 所以普通变量也可以调用原型方法
+    //    console.log(arr.__proto__);
+    //    // true
+    //    console.log(arr.__proto__ === Array.prototype); 
+    //    // 原型链arr.__proto__ === Array.prototype
+       
+    //    // 数组的构造函数来源(constructor)为Array()
+    //    console.log(Array.prototype);
+    //    // Array的prototype是一个对象Object
+    //    console.log(Array.prototype.__proto__ === Object.prototype);
+
+    //    // Object也有一个原型
+    //    console.log(Object.prototype)
+    //    console.log(Object.prototype.__proto__);
+
+       // 构造函数记录了当前原型对象产生的归属，原型是基于那个地方构建的，那么constructor指向的就是那个构造函数
+    </script>
+</body>
+</html>

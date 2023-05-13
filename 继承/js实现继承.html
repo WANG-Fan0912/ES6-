@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<div>打开控制台查看结果</div>
+<script>
+console.log('===========js实现继承========');
+console.log('原型链继承');
+function Parent(params = null){
+    this.name = 'parentl';
+    this.play = [1,2,3]
+}
+function Child() {
+    this.type = 'child2'
+}
+Child.prototype = new Parent() // 通过prototype继承 new Parent()来实现继承
+console.log(new Child); // 包含Parent和Child中的所有属性 原型链上有该方法 [[Prototype]] : Parent
+let ch = new Child()
+let ch2 = new Child()
+console.log(ch.play);  // [1,2,3]
+// 不管Child被实例化多少次，他们的指针都指向同一个地方，因为他们使用的是同一个原型对象
+ch2.play.push(6)
+console.log(ch.play);  // [1, 2, 3, 6]
+console.log(ch2.play); // [1, 2, 3, 6]
+
+
+console.log('=================');
+console.log('构造函数继承');
+function Parent2(){
+    this.name = 'parent2'
+    this.play = [1,2,3]
+}
+// Parent2原型上定义一个方法
+Parent2.prototype.getName = function(){
+    return this.name
+}
+console.log(new Parent2());  // Parent2 {name: 'parent2'}  prototype:getName()
+ 
+function Child2(){
+    Parent2.call(this);  // 构造函数继承,call 方法可以用来代替另一个对象调用一个方法。​ call 方法可将一个函数的对象上下文从初始的上下文改变为由 thisObj 指定的新对
+    this.type = 'child'
+}
+let child3 = new Child2()
+let child4 = new Child2()
+console.log(child3);  // {name: 'parent2', type: 'child'}
+// console.log(child3.getName()); // 报错
+child3.play.push(6)
+console.log(child3.play,child4.play); // [1, 2, 3, 6]  [1, 2, 3]
+/* 需要注意：
+   只能继承父类的实例属性和方法，不能继承原型属性或者方法。
+   相比于第一种原型链继承，父类的引用属性不会被共享，优化了原型链继承的弊端。
+*/
+
+
+
+
+console.log('=============');
+console.log('组合继承');
+function Parent3(){
+    this.name = 'parent3';
+    this.play = [1,2,3];
+}
+Parent3.prototype.getName = function(){
+    console.log('getName:',this.name);
+}
+function Son(){
+    Parent3.call(this);  // 构造函数继承
+    this.type = 'son'
+}
+console.log(new Son());
+Son.prototype = new Parent3();
+console.log(new Son());
+let s = new Son()
+let s2 = new Son()
+s.play.push(6)
+console.log(s.play,s2.play); // [1, 2, 3, 6]  [1, 2, 3]
+/* 这种写法，父类的引用属性不会共享，而且能获得父类圆形的属性或方法，缺点是Parent执行了两次，造成了性能开销 */
+
+
+
+
+
+
+
+console.log('==============');
+console.log('原型式继承');
+let father = {
+    name : 'father',
+    friends : [1,2,3],
+    getName : function(){
+       return this.name
+    }
+}
+father.getName = function(){
+    return 'getName返回' + this.name
+}
+let father2 = Object.create(father) // Object.create() 方法用于创建一个新对象，使用现有的对象来作为新创建对象的原型（prototype）
+father2.name = 'jack'
+father2.friends.push(6)
+let father3 = Object.create(father) // Object.create() 方法用于创建一个新对象，使用现有的对象来作为新创建对象的原型（prototype）
+father2.name = 'tom'
+father3.friends.push(8)
+console.log(father2,father3); // {name: 'tom'} {}
+console.log(father2.name); // tom
+console.log(father3.name); // father
+console.log(father2.friends); // [1, 2, 3, 6, 8]
+console.log(father3.friends); //  [1, 2, 3, 6, 8]
+/* 相当于原先链继承，原型链继承其实需要注意一点，原型链继承的属性和方法多个对象引用的是同一个地址，存在引用地址类型的浅拷贝问题，需要注意 */
+
+
+
+
+
+
+
+
+console.log('===========');
+console.log('寄生式继承');
+let father4 = {
+    name : 'father',
+    friends : [1,2,3],
+    getName : function(){
+        return this.name
+    }
+}
+    
+function clone(params){
+    let clone = Object.create(params) // Object.create() 方法用于创建一个新对象，使用现有的对象来作为新创建对象的原型（prototype）
+    clone.getFriends = function(){
+        return this.friends
+    }
+    return clone
+}
+let person = clone(father4)
+console.log(person);
+console.log(person.getName());
+console.log(person.getFriends());
+/* 相当于原先链继承，原型链继承其实需要注意一点，原型链继承的属性和方法多个对象引用的是同一个地址，存在引用地址类型的浅拷贝问题，需要注意 */
+
+
+
+
+
+console.log('==============');
+console.log('寄生组合式继承');
+function clone2(Father5,Son2){
+    // 将子类的原型继等于父类的原型
+    Son2.prototype = Object.create(Father5.prototype);
+    // 子类的构造器等于子类
+    Son2.prototype.constructor = Son2;
+}
+// 创建一个父类
+function Father5(){
+    this.name = 'father';
+    this.play = [1,2,3];
+}
+// 在父类的原型上添加一个getName方法，该方法指向当前类的name
+Father5.prototype.getName = function(){
+    return this.name;
+}
+// 创建一个子类
+function Son2(){
+    Father5.call(this);  // 构造函数继承-继承父类属性到子类属性
+    this.friends = 'son2';
+}
+// 寄生组合式继承
+clone2(Father5,Son2);
+Son2.prototype.getFriends = function(){
+    return this.friends
+}
+let person2 = new Son2();
+let person3 = new Son2();
+console.log(person2); //  {name: 'father', play: Array(3), friends: 'son2'}
+console.log(person2.getName());  // father
+console.log(person2.getFriends()); // son2
+person2.play.push(6)
+person3.play.push(8)
+console.log(person2.play,person3.play); // [1, 2, 3, 6]  [1, 2, 3, 8]
+/* 寄生组合式继承是最优的继承方法？ */
+
+
+
+
+
+console.log('==============');     
+console.log('extends实现继承');
+class Category {
+    constructor(name){
+        if(name){
+            this.name = name
+        }
+        }
+        getName = function(){
+            console.log('category:'+this.name);
+        }
+    }
+    class Drawer extends Category {
+        constructor(info){
+            super(info.name)
+            if(info){
+                this.age = info.age
+            }
+            
+        }
+}
+    const data = new Drawer({name:'东方不败',age:100})
+    const data2 = new Drawer({name:'西方求败',age:200})
+    data.name = '艺术概论'
+    console.log(data);
+    console.log(data2);
+    /* 子类继承父类使用extends，并且子类的构造器中必须调用一次super()函数，子类构造函数中的super()代表调用父类的构造函数，这是必须的，否则报错。在super()中传入参数，相当于给父类的constructor()传入参数。
+       并且，多个对象生成对象实例都是独立的，不会产生影响
+    */
+</script>
+</body>
+</html>
